@@ -1,0 +1,25 @@
+{
+  "scripts": {
+    "webpack": "NODE_ENV=development webpack --progress --hide-modules",
+    "dev": "NODE_ENV=development webpack-dev-server --progress --content-base build"
+  },
+  "dependencies": {
+    "axios": "^0.15.3",
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.22.0",
+    "bootstrap": "4.0.0-alpha.6",
+    "css-loader": "^0.26.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "node-sass": "^4.3.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-router": "4.0.0-alpha.6",
+    "sass-loader": "^4.1.1",
+    "style-loader": "^0.13.1",
+    "webpack": "beta",
+    "webpack-dev-server": "beta",
+    "webpack-livereload-plugin": "^0.10.0"
+  }
+}
