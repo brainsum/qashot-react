@@ -1,7 +1,7 @@
 {
   "scripts": {
     "webpack": "NODE_ENV=development webpack --progress --hide-modules",
-    "dev": "NODE_ENV=development CHOKIDAR_USEPOLLING=1 webpack-dev-server --progress --content-base build --inline --hot",
+    "dev": "NODE_ENV=development webpack-dev-server --progress --content-base build --inline --hot",
     "postinstall": "node ./scripts/create_symlink.js"
   },
   "dependencies": {
