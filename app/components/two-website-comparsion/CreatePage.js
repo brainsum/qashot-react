@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'app/utils/axios';
+import axios from '../../utils/axios';
 
 export default class TwoWebsiteComparsionCreatePage extends Component {
   componentDidMount() {

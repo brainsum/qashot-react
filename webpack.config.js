@@ -1,5 +1,4 @@
 const path = require('path');
-const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 module.exports = {
   entry: './app/index.js',
@@ -27,7 +26,8 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new LiveReloadPlugin()
-  ]
+  watchOptions: {
+    poll: 1000,
+	ignored: /node_modules/
+  }
 }

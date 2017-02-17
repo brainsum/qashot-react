@@ -1,15 +1,19 @@
 {
   "scripts": {
     "webpack": "NODE_ENV=development webpack --progress --hide-modules",
-    "dev": "NODE_ENV=development webpack-dev-server --progress --content-base build",
+    "dev": "NODE_ENV=development CHOKIDAR_USEPOLLING=1 webpack-dev-server --progress --content-base build --inline --hot",
     "postinstall": "node ./scripts/create_symlink.js"
   },
   "dependencies": {
     "axios": "^0.15.3",
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
+    "babel-plugin-react-html-attrs": "^2.0.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
     "bootstrap": "4.0.0-alpha.6",
     "colors": "^1.1.2",
     "css-loader": "^0.26.1",
@@ -17,11 +21,15 @@
     "node-sass": "^4.3.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-redux": "^5.0.2",
     "react-router": "4.0.0-alpha.6",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.8.1",
+    "redux-promise-middleware": "^4.2.0",
+    "redux-thunk": "^2.2.0",
     "sass-loader": "^4.1.1",
     "style-loader": "^0.13.1",
     "webpack": "2.2.1",
-    "webpack-dev-server": "beta",
-    "webpack-livereload-plugin": "^0.10.0"
+    "webpack-dev-server": "beta"
   }
 }

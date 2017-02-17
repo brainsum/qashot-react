@@ -1,24 +1,18 @@
 import React, { Component } from 'react';
-import axios from 'app/utils/axios';
+import { connect } from "react-redux";
 import { Link } from 'react-router';
 
+import { fetchTests } from '../../actions/testsActions';
+
+@connect((store) => {
+  return {
+    isLoading: store.tests.fetching,
+    tests: store.tests.tests.data,
+  };
+})
 export default class TestsPage extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      isLoading: true,
-      tests: null
-    };
-  }
-
   componentDidMount() {
-    axios.get('api/rest/v1/test_list?_format=json').then(response => {
-      this.setState({
-        isLoading: false,
-        tests: response.data
-      });
-    });
+    this.props.dispatch(fetchTests());
   }
 
   render() {
@@ -28,21 +22,21 @@ export default class TestsPage extends Component {
           <strong>2 website</strong> comparsions (eg. Development VS Live)
         </h2>
 
-        <table className="table table-striped">
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>#</th>
               <th>Session name</th>
               <th>Last run</th>
-              <th className="text-center">Tests Passed</th>
-              <th className="text-center" className="text-center">Tests Failed</th>
+              <th class="text-center">Tests Passed</th>
+              <th class="text-center">Tests Failed</th>
               <th width="1%"></th>
               <th width="1%"></th>
             </tr>
           </thead>
           {this.renderTests()}
         </table>
-        <Link to="/create-two-website-comparsion" className="btn btn-link btn-sm">
+        <Link to="/create-two-website-comparsion" class="btn btn-link btn-sm">
           + Add new session
         </Link>
       </div>
@@ -50,14 +44,14 @@ export default class TestsPage extends Component {
   }
 
   renderTests() {
-    const { isLoading, tests } = this.state;
+    const { isLoading, tests } = this.props;
 
     if (isLoading) {
       return (
         <tbody>
           <tr>
-            <td colSpan="7" className="text-center">
-              <div className="loading-spinner"></div>
+            <td colSpan="7" class="text-center">
+              <div class="loading-spinner"></div>
             </td>
           </tr>
         </tbody>
@@ -75,13 +69,13 @@ export default class TestsPage extends Component {
                 </Link>
               </td>
               <td>-</td>
-              <td className="text-center">-</td>
-              <td className="text-center">-</td>
+              <td class="text-center">-</td>
+              <td class="text-center">-</td>
               <td>
-                <button className="btn btn-primary btn-sm">Run the test</button>
+                <button class="btn btn-primary btn-sm">Run the test</button>
               </td>
               <td>
-                <button className="btn btn-link btn-sm">Delete</button>
+                <button class="btn btn-link btn-sm">Delete</button>
               </td>
             </tr>
           ))}
