@@ -44,8 +44,8 @@ export default class TwoWebsiteComparsionItemPage extends Component {
             </div>
             <div class="view-ports">
               <div>Viewports (<Link to="#">edit</Link>)</div>
-              {data.field_viewport.map((viewport, index) => (
-                <div key={index}>{viewport.name}</div>
+              {data.viewport.map((viewport, index) => (
+                <div key={index}>{viewport.width}x{viewport.height} ({viewport.name})</div>
               ))}
             </div>
           </div>
