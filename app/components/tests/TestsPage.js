@@ -64,8 +64,8 @@ export default class TestsPage extends Component {
             <tr key={index}>
               <td>{index + 1}</td>
               <td>
-                <Link to={`/two-website-comparsion/${test.id[0].value}`}>
-                  {test.name[0].value}
+                <Link to={`/two-website-comparsion/${test.id}`}>
+                  {test.name}
                 </Link>
               </td>
               <td>-</td>
