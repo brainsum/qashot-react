@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Link } from 'react-router';
+//import { push } from 'react-router-redux';
 
-import { fetchTests } from '../../actions/testsActions';
+import { fetchTests, fetchTestsByUrl, fetchTestsByPageAndLimit } from '../../actions/testsActions';
 
 @connect((store) => {
   return {
@@ -36,6 +37,7 @@ export default class TestsPage extends Component {
           </thead>
           {this.renderTests()}
         </table>
+        {this.renderPagination()}
         <Link to="/create-two-website-comparsion" class="btn btn-link btn-sm">
           + Add new session
         </Link>
@@ -60,10 +62,9 @@ export default class TestsPage extends Component {
     if (tests) {
       return (
         <tbody>
-        {console.log(tests)}
           {tests.entity.map((test, index) => (
             <tr key={test.id[0].value}>
-              <td>{index + 1}</td>
+              <td>{(tests.pagination.page - 1) * 10 + index + 1}</td>
               <td>
                 <Link to={`/two-website-comparsion/${test.id[0].value}`}>
                   {test.name[0].value}
@@ -73,7 +74,7 @@ export default class TestsPage extends Component {
               <td class="text-center">{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].passed_count : '-'}</td>
               <td class="text-center">{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].failed_count : '-'}</td>
               <td>
-                <button class="btn btn-primary btn-sm">Run the test</button>
+                <button class="btn btn-primary btn-sm">{test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}</button>
               </td>
               <td>
                 <button class="btn btn-link btn-sm">Delete</button>
@@ -85,5 +86,75 @@ export default class TestsPage extends Component {
     }
 
     return null;
+  }
+
+  renderPagination() {
+    const { tests } = this.props;
+
+    if (tests) {
+      const dotDotDot = <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events:none;"><span aria-label="More">…</span></a></li>;
+
+      let pageNumbers = [];
+      for (let i = 1; i <= tests.pagination.total_pages; i++) {
+        pageNumbers.push(<li class={tests.pagination.page == i ? 'page-item active' : 'page-item'} key={i} onClick={this.pagerGotoPageByNumber.bind(this, i, tests.pagination.limit)}><a class="page-link" href="#">{i}</a></li>);
+      }
+
+      let previous, first, next, last;
+
+      if (tests.pagination.links.first) {
+        first = (<li class="page-item">
+          <a class="page-link" href="#" aria-label="First" onClick={this.pagerGotoPage.bind(this, tests.pagination.links.first)}>
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">First</span>
+          </a>
+        </li>);
+      }
+      if (tests.pagination.links.previous) {
+        previous = (<li class="page-item">
+          <a class="page-link" href="#" aria-label="Previous" onClick={this.pagerGotoPage.bind(this, tests.pagination.links.previous)}>
+            <span aria-hidden="true">‹</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>);
+      }
+      if (tests.pagination.links.next) {
+        next = (<li class="page-item">
+          <a class="page-link" href="#" aria-label="Next" onClick={this.pagerGotoPage.bind(this, tests.pagination.links.next)}>
+            <span aria-hidden="true">›</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>);
+      }
+      if (tests.pagination.links.last) {
+        last = (<li class="page-item">
+          <a class="page-link" href="#" aria-label="Last" onClick={this.pagerGotoPage.bind(this, tests.pagination.links.last)}>
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Last</span>
+          </a>
+        </li>);
+      }
+
+      return (
+        <nav aria-label="Page navigation for tests">
+          <ul class="pagination justify-content-center">
+            {first}
+            {previous}
+            {pageNumbers}
+            {next}
+            {last}
+          </ul>
+        </nav>
+      );
+    }
+
+    return null;
+  }
+
+  pagerGotoPage(url) {
+    this.props.dispatch(fetchTestsByUrl(url));
+  }
+
+  pagerGotoPageByNumber(number, limit) {
+    this.props.dispatch(fetchTestsByPageAndLimit(number, limit));
   }
 }
