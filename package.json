@@ -2,6 +2,7 @@
   "scripts": {
     "build": "NODE_ENV=production webpack -p --config ./webpack.production.config.js",
     "dev": "NODE_ENV=development webpack-dev-server --progress --content-base build --inline --hot",
+    "start": "NODE_ENV=development webpack-dev-server --progress --profile --colors --host 0.0.0.0 --content-base build --inline",
     "postinstall": "node ./scripts/create_symlink.js"
   },
   "dependencies": {
