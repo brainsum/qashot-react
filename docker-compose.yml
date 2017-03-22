@@ -1,0 +1,18 @@
+version: "2"
+
+services:
+  app:
+#    image: node:6.10-alpine
+    build:
+      context: .
+      dockerfile: app.dockerfile
+    working_dir: /home/node/src
+    labels:
+      - 'traefik.backend=node'
+      - 'traefik.port=3000'
+      - 'traefik.frontend.rule=Host:front.drupal.docker.localhost'
+    ports:
+     - "8080:8080"
+    volumes:
+      - .:/home/node/src
+#    command: yarn start
