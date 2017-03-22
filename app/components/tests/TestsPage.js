@@ -60,17 +60,18 @@ export default class TestsPage extends Component {
     if (tests) {
       return (
         <tbody>
-          {tests.map((test, index) => (
-            <tr key={index}>
+        {console.log(tests)}
+          {tests.entity.map((test, index) => (
+            <tr key={test.id[0].value}>
               <td>{index + 1}</td>
               <td>
-                <Link to={`/two-website-comparsion/${test.id}`}>
-                  {test.name}
+                <Link to={`/two-website-comparsion/${test.id[0].value}`}>
+                  {test.name[0].value}
                 </Link>
               </td>
-              <td>-</td>
-              <td class="text-center">-</td>
-              <td class="text-center">-</td>
+              <td>{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].datetime : '-'}</td>
+              <td class="text-center">{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].passed_count : '-'}</td>
+              <td class="text-center">{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].failed_count : '-'}</td>
               <td>
                 <button class="btn btn-primary btn-sm">Run the test</button>
               </td>
