@@ -20,6 +20,14 @@ export default function reducer(state={
         test: action.payload,
       };
     }
+    case "FETCH_TESTS_PENDING": {
+      return {
+        test: {},
+        fetching: false,
+        fetched: false,
+        error: null,
+      };
+    }
   }
 
   return state;
