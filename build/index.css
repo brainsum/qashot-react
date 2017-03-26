@@ -7801,5 +7801,8 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
   100% {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg); } }
+.test-cases img {
+  width: 100%;
+  height: auto; }
 
 /*# sourceMappingURL=index.css.map */
