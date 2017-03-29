@@ -17,3 +17,10 @@ export function runTest(id) {
     }),
   }
 }
+
+export function deleteTest(id) {
+  return {
+    type: "DELETE_TEST",
+    payload: axios.delete('api/rest/v1/qa_shot_test/' + id + '?_format=json'),
+  };
+}

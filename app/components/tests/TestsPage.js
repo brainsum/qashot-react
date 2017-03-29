@@ -4,16 +4,27 @@ import { Link } from 'react-router';
 //import { push } from 'react-router-redux';
 
 import { fetchTests, fetchTestsByUrl, fetchTestsByPageAndLimit } from '../../actions/testsActions';
+import { deleteTest, runTest } from "../../actions/testsActions";
 
 @connect((store) => {
   return {
     isLoading: store.tests.fetching,
+    deleting: store.tests.deleting,
+    running: store.tests.running,
     tests: store.tests.tests.data,
   };
 })
 export default class TestsPage extends Component {
   componentDidMount() {
     this.props.dispatch(fetchTests());
+  }
+
+  runTest(id) {
+    this.props.dispatch(runTest(id))
+  }
+
+  deleteTest(id) {
+    this.props.dispatch(deleteTest(id))
   }
 
   render() {
@@ -46,9 +57,9 @@ export default class TestsPage extends Component {
   }
 
   renderTests() {
-    const { isLoading, tests } = this.props;
+    const { isLoading, tests, running, deleting } = this.props;
 
-    if (isLoading) {
+    if (isLoading && !tests) {
       return (
         <tbody>
           <tr>
@@ -74,10 +85,16 @@ export default class TestsPage extends Component {
               <td class="text-center">{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].passed_count : '-'}</td>
               <td class="text-center">{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].failed_count : '-'}</td>
               <td>
-                <button class="btn btn-primary btn-sm">{test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}</button>
+                {running[test.id[0].value] ? "Running..." :
+                  <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id[0].value)}>
+                    {test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
+                  </button>
+                }
               </td>
               <td>
-                <button class="btn btn-link btn-sm">Delete</button>
+                {deleting[test.id[0].value] ? "Deleting..." :
+                  <button class="btn btn-link btn-sm" onClick={this.deleteTest.bind(this, test.id[0].value)}>Delete</button>
+                }
               </td>
             </tr>
           ))}
