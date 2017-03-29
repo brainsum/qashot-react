@@ -126,9 +126,9 @@ export default class TwoWebsiteComparsionItemPage extends Component {
       <div>
         <div class="compared-time">Compared at: {isData ? data.metadata_last_run[0].datetime : "Not compared yet"}</div>
         <div class="test-runtime">(Test run time: {isData? data.metadata_last_run[0].duration : "Not runned yet"})</div>
-        <a class="btn btn-link btn-lg" onClick={this.runTest.bind(this)}>
+        <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this)}>
           {data.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
-        </a>
+        </button>
         <a>
           Set automated runs
         </a>
