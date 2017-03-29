@@ -119,13 +119,3 @@ export function saveAndRunTest(curState) {
     });
   };
 }
-
-export function runTest(id) {
-  return {
-    type: "RUN_TEST",
-    payload: axios.post('api/rest/v1/qa_shot_test/' + id + '/run?_format=json', {
-      test_stage: "",
-      type: "a_b",
-    }),
-  }
-}
