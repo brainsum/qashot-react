@@ -39,7 +39,6 @@ module.exports = {
     new ExtractTextPlugin({ filename: 'css/bundle.css', disable: false, allChunks: false }),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
       mangle: true,
       compress: {
