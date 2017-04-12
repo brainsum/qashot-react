@@ -1,5 +1,6 @@
 
 import axios from '../utils/axios';
+import {generateTestUrl} from "../utils/helper";
 
 export function fetchTests() {
   return {
@@ -30,6 +31,7 @@ export function runTest(id) {
       payload: axios.post('api/rest/v1/qa_shot_test/' + id + '/run?_format=json', {
         test_stage: "",
         type: "a_b",
+        frontend_url: generateTestUrl(id),
       }),
     });
   };
