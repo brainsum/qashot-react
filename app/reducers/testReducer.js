@@ -51,7 +51,7 @@ export default function reducer(state={
         successMessage: action.payload.message,
       };
     }
-    case "FETCH_TESTS_PENDING": {
+    case "FETCH_test_PENDING": {
       return {
         test: {},
         fetching: false,
@@ -60,6 +60,82 @@ export default function reducer(state={
         error: null,
         successMessage: null,
       };
+    }
+    case "ADD_VIEWPORT_DETAILS_PAGE": {
+      let newState = {...state};
+      newState.test = {...newState.test};
+      newState.test.data = {...newState.test.data};
+      newState.test.data.viewport.push({
+        width: "",
+        height: "",
+        name: "",
+      });
+      return newState;
+    }
+    case "DELETE_VIEWPORT_DETAILS_PAGE": {
+      let newState = {...state};
+      newState.test = {...newState.test};
+      newState.test.data = {...newState.test.data};
+      newState.test.data.viewport.splice(action.payload, 1);
+      return newState;
+    }
+    case "CHANGE_FIELD_VALUE_VIEWPORT_DETAILS_PAGE": {
+      let newState = {...state};
+      newState.test = {...newState.test};
+      newState.test.data = {...newState.test.data};
+      switch (action.payload.field) {
+        case "FIELD_WIDTH": {
+          newState.test.data.viewport[action.payload.index].width = action.payload.value;
+          break;
+        }
+        case "FIELD_HEIGHT": {
+          newState.test.data.viewport[action.payload.index].height = action.payload.value;
+          break;
+        }
+        case "FIELD_NAME": {
+          newState.test.data.viewport[action.payload.index].name = action.payload.value;
+          break;
+        }
+      }
+      return newState;
+    }
+    case "ADD_NEW_PAGE_URL_PAIR_DETAILS_PAGE": {
+      let newState = {...state};
+      newState.test = {...newState.test};
+      newState.test.data = {...newState.test.data};
+      newState.test.data.field_scenario.push({
+        source: "",
+        destination: "",
+        name: "",
+      });
+      return newState;
+    }
+    case "DELETE_PAGE_URL_PAIR_DETAILS_PAGE": {
+      let newState = {...state};
+      newState.test = {...newState.test};
+      newState.test.data = {...newState.test.data};
+      newState.test.data.field_scenario.splice(action.payload, 1);
+      return newState;
+    }
+    case "CHANGE_FIELD_VALUE_PAGE_URL_PAIR_DETAILS_PAGE": {
+      let newState = {...state};
+      newState.test = {...newState.test};
+      newState.test.data = {...newState.test.data};
+      switch (action.payload.field) {
+        case "FIELD_SOURCE": {
+          newState.test.data.field_scenario[action.payload.index].source = action.payload.value;
+          break;
+        }
+        case "FIELD_DESTINATION": {
+          newState.test.data.field_scenario[action.payload.index].destination = action.payload.value;
+          break;
+        }
+        case "FIELD_NAME": {
+          newState.test.data.field_scenario[action.payload.index].name = action.payload.value;
+          break;
+        }
+      }
+      return newState;
     }
   }
 

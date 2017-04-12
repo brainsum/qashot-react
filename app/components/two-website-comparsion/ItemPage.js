@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Link } from "react-router";
 
-import {fetchTest, runTest} from '../../actions/testActions';
+import {
+  addNewViewport, changeValueOfViewport, deleteViewport, fetchTest,
+  runTest
+} from '../../actions/testActions';
 
 @connect((store) => {
   return {
@@ -21,7 +24,10 @@ export default class TwoWebsiteComparsionItemPage extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {displayMode: "exp-all"};
+    this.state = {
+      displayMode: "exp-all",
+      viewportsEditable: false,
+    };
   }
 
   componentDidMount() {
@@ -32,6 +38,26 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
   displayMode(e) {
     this.setState({displayMode: e.target.value});
+  }
+
+  editViewports() {
+    this.setState({viewportsEditable: true});
+  }
+
+  deleteViewport(index) {
+    this.props.dispatch(deleteViewport(index));
+  }
+
+  changeValueOfViewport(index, field, e) {
+    this.props.dispatch(changeValueOfViewport(e.target.value, index, field));
+  }
+
+  saveViewports() {
+    this.setState({viewportsEditable: false});
+  }
+
+  editAddNewViewports() {
+    this.props.dispatch(addNewViewport());
   }
 
   runTest() {
@@ -133,13 +159,45 @@ export default class TwoWebsiteComparsionItemPage extends Component {
           Set automated runs
         </a>
       </div>
-      <div class="view-ports">
-        <div>Viewports (<Link to="#">edit</Link>)</div>
-        {data.viewport.map((viewport, index) => (
-          <div key={index}>{viewport.width}x{viewport.height} ({viewport.name})</div>
-        ))}
-      </div>
+      {this.renderViewports()}
     </div>);
+  }
+
+  renderViewports() {
+    const {data} = this.props;
+
+    if (this.state.viewportsEditable) {
+      let viewportsItems = [];
+      for (let i = 0; i < data.viewport.length; i++) {
+        viewportsItems.push(<div key={i}>
+          {i + 1}. <input type="text" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={data.viewport[i].width} />*
+          <input type="text" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={data.viewport[i].height} />
+          &nbsp;(<input type="text" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={data.viewport[i].name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
+        </div>);
+      }
+
+      return (
+        <div class="view-ports">
+          <div>Viewports</div>
+          <div class="viewports-edit">
+            {viewportsItems}
+            <div class="buttons"><a onClick={this.editAddNewViewports.bind(this)} class="btn btn-link btn-sm">+ Add new viewport</a> <a onClick={this.saveViewports.bind(this)} class="btn btn-link btn-sm">Save</a></div>
+          </div>
+        </div>
+      );
+    }
+    else {
+      return (
+        <div class="view-ports">
+          <div>Viewports (<a onClick={this.editViewports.bind(this)}>edit</a>)</div>
+          <div class="viewports-list">
+            {data.viewport.map((viewport, index) => (
+              <div key={index}>{viewport.width}x{viewport.height} ({viewport.name})</div>
+            ))}
+          </div>
+        </div>
+      );
+    }
   }
 
   renderTestResults() {
@@ -178,20 +236,26 @@ export default class TwoWebsiteComparsionItemPage extends Component {
   }
 
   renderTestResultsViewports(i, j, viewportItem) {
-    if (this.results[i][j].success === "1") {
-      if (this.state.displayMode === "exp-all") {
-        return this.renderTestResultsViewportsExpanded(i, j, viewportItem);
+    if (this.results[i][j]) {
+      if (this.results[i][j].success === "1") {
+        if (this.state.displayMode === "exp-all") {
+          return this.renderTestResultsViewportsExpanded(i, j, viewportItem);
+        }
+        else {
+          return this.renderTestResultsViewportsCollapsed(i, j, viewportItem);
+        }
       }
       else {
-        return this.renderTestResultsViewportsCollapsed(i, j, viewportItem);
+        if (this.state.displayMode === "coll-all") {
+          return this.renderTestResultsViewportsCollapsed(i, j, viewportItem);
+        }
+        else {
+          return this.renderTestResultsViewportsExpanded(i, j, viewportItem);
+        }
       }
     }
-
-    if (this.state.displayMode === "coll-all") {
-      return this.renderTestResultsViewportsCollapsed(i, j, viewportItem);
-    }
     else {
-      return this.renderTestResultsViewportsExpanded(i, j, viewportItem);
+      return this.renderTestResultsViewportsNone(j, viewportItem);
     }
   }
 
@@ -212,6 +276,13 @@ export default class TwoWebsiteComparsionItemPage extends Component {
     return (<div key={j} class="row">
       <h3 class="col-lg-8">Viewport: {viewportItem.width} * {viewportItem.height} ({viewportItem.name})</h3>
       {this.renderTestResult(this.results[i][j].success, this.results[i][j].full_diff)}
+    </div>);
+  }
+
+  renderTestResultsViewportsNone(j, viewportItem) {
+    return (<div key={j} class="row">
+      <h3 class="col-lg-8">Viewport: {viewportItem.width} * {viewportItem.height} ({viewportItem.name})</h3>
+      <div class="compare col-lg-4"><span class="difference-info">There's no test result for this. Please run the test first.</span></div>
     </div>);
   }
 
