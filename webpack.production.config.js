@@ -10,6 +10,7 @@ module.exports = {
     publicPath: '/',
     filename: 'index.js'
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -20,23 +21,19 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.sass$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
+        test: /\.sass|\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader?sourceMap',
+            'sass-loader?sourceMap'
+          ],
+        })
       }
     ]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        // This has effect on the react lib size
-        'NODE_ENV': JSON.stringify('production'),
-      }
-    }),
-    new ExtractTextPlugin({ filename: 'css/bundle.css', disable: false, allChunks: false }),
+    new ExtractTextPlugin({ filename: 'index.css', disable: false, allChunks: true }),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
@@ -48,6 +45,7 @@ module.exports = {
         unsafe_comps: true,
         screw_ie8: true
       },
+      sourceMap: true,
       output: {
         comments: false,
       },
