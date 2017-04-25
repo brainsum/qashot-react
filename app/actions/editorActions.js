@@ -1,4 +1,5 @@
 import axios from '../utils/axios';
+import {generateTestUrl} from "../utils/helper";
 
 export function loadTestEditor() {
   return {
@@ -113,6 +114,7 @@ export function saveAndRunTest(curState) {
           payload: axios.post('api/rest/v1/qa_shot_test/' + result.data.id[0].value + '/run?_format=json', {
             test_stage: "",
             type: "a_b",
+            frontend_url: generateTestUrl(id),
           }),
         });
       }

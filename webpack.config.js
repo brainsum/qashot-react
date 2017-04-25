@@ -7,6 +7,7 @@ module.exports = {
     publicPath: '/',
     filename: 'index.js'
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -20,8 +21,8 @@ module.exports = {
         test: /\.sass$/,
         use: [
           'style-loader',
-          'css-loader',
-          'sass-loader'
+          'css-loader?sourceMap',
+          'sass-loader?sourceMap'
         ]
       }
     ]
