@@ -25,8 +25,15 @@ export default class TwoWebsiteComparsionItemPage extends Component {
     super(props);
 
     this.state = {
-      displayMode: "exp-all",
+      displayMode: "exp-fail",
       viewportsEditable: false,
+      newScenario: false,
+      newScenarioData: {
+        name: "",
+        source: "",
+        destination: "",
+      },
+      editScenario: {},
     };
   }
 
@@ -60,6 +67,47 @@ export default class TwoWebsiteComparsionItemPage extends Component {
     this.props.dispatch(addNewViewport());
   }
 
+  editScenario(id){
+    this.setState({editScenario: {...this.state.editScenario, [id]: true}});
+  }
+
+  saveScenario(id) {
+    if (id === null || id === "" || typeof(id) === undefined) {
+      this.setState({
+        newScenario: false,
+        newScenarioData: {
+          name: "",
+          source: "",
+          destination: "",
+        }
+      });
+    }
+    else {
+      this.setState({editScenario: {...this.state.editScenario, [id]: false}});
+    }
+  }
+
+  cancelNewScenario() {
+    this.setState({
+      newScenario: false,
+      newScenarioData: {
+        name: "",
+        source: "",
+        destination: "",
+      }
+    });
+  }
+
+  changeValueOfPageUrlPair(property, e) {
+    this.setState({
+      newScenarioData: {...this.state.newScenarioData, [property]: e.target.value}
+    });
+  }
+
+  addNewScenario() {
+    this.setState({newScenario: true});
+  }
+
   runTest() {
     this.props.dispatch(runTest(this.props.data.id[0].value));
   }
@@ -83,7 +131,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
           <h1>{data.name[0].value}</h1>
           {this.renderTestHeader()}
           <div class="test-links">
-            <Link to="#">+ Add new test</Link>
+            <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
             <div class="display-radios">
               {display.map(([id, value, text], i) => <label for={id} key={i}><input type="radio" name="display" value={value} id={id} onChange={this.displayMode.bind(this)} checked={this.state.displayMode === value} />{text}</label>)}
             </div>
@@ -91,7 +139,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
         </div>
           {this.renderMessages()}
           { isLoading && testIsRunning ? "" : this.renderTestResults() }
-        <Link to="#">+ Add new test</Link>
+        <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
       </div>);
     }
     else {
@@ -168,11 +216,11 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
     if (this.state.viewportsEditable) {
       let viewportsItems = [];
-      for (let i = 0; i < data.viewport.length; i++) {
+      for (let i = 0; i < data.field_viewport.length; i++) {
         viewportsItems.push(<div key={i}>
-          {i + 1}. <input type="text" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={data.viewport[i].width} />*
-          <input type="text" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={data.viewport[i].height} />
-          &nbsp;(<input type="text" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={data.viewport[i].name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
+          {i + 1}. <input type="text" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={data.field_viewport[i].field_width} />*
+          <input type="text" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={data.field_viewport[i].field_height} />
+          &nbsp;(<input type="text" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={data.field_viewport[i].field_name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
         </div>);
       }
 
@@ -191,8 +239,8 @@ export default class TwoWebsiteComparsionItemPage extends Component {
         <div class="view-ports">
           <div>Viewports (<a onClick={this.editViewports.bind(this)}>edit</a>)</div>
           <div class="viewports-list">
-            {data.viewport.map((viewport, index) => (
-              <div key={index}>{viewport.width}x{viewport.height} ({viewport.name})</div>
+            {data.field_viewport.map((viewport, index) => (
+              <div key={index}>{viewport.field_width}x{viewport.field_height} ({viewport.field_name})</div>
             ))}
           </div>
         </div>
@@ -204,7 +252,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
     const {data} = this.props;
 
     if (data.result.length > 0) {
-      this.results = this.makeArray(data.field_scenario.length, data.viewport.length);
+      this.results = this.makeArray(data.field_scenario.length, data.field_viewport.length);
 
       data.result.map((res, i) => {
         this.results[res.scenario_delta][res.viewport_delta] = res;
@@ -214,7 +262,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
         {data.field_scenario.map((scenario, i) => (
           <div key={i}>
             <div class="scenario-info">
-              <h2>{scenario.label}</h2>
+              <h2>{scenario.label} (<a onClick={this.editScenario.bind(this, i)}>edit</a>)</h2>
               <div class="row">
                 <div class="col-lg-4">{scenario.referenceUrl}</div>
                 <div class="col-lg-4">{scenario.testUrl}</div>
@@ -223,12 +271,13 @@ export default class TwoWebsiteComparsionItemPage extends Component {
             </div>
 
             <div class="viewports">
-              {data.viewport.map((viewportItem, j) =>
+              {data.field_viewport.map((viewportItem, j) =>
                   this.renderTestResultsViewports(i, j, viewportItem)
               )}
             </div>
           </div>
         ))}
+        {this.renderNewScenario()}
       </div>);
     }
 
@@ -261,7 +310,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
   renderTestResultsViewportsExpanded(i, j, viewportItem) {
     return (<div key={j} class="row">
-      <h3 class="col-lg-12">Viewport: {viewportItem.width} * {viewportItem.height} ({viewportItem.name})</h3>
+      <h3 class="col-lg-12">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</h3>
       <div class="source col-lg-4">
         <img src={this.results[i][j].full_reference}/>
       </div>
@@ -274,14 +323,14 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
   renderTestResultsViewportsCollapsed(i, j, viewportItem) {
     return (<div key={j} class="row">
-      <h3 class="col-lg-8">Viewport: {viewportItem.width} * {viewportItem.height} ({viewportItem.name})</h3>
+      <h3 class="col-lg-8">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</h3>
       {this.renderTestResult(this.results[i][j].success, this.results[i][j].full_diff)}
     </div>);
   }
 
   renderTestResultsViewportsNone(j, viewportItem) {
     return (<div key={j} class="row">
-      <h3 class="col-lg-8">Viewport: {viewportItem.width} * {viewportItem.height} ({viewportItem.name})</h3>
+      <h3 class="col-lg-8">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</h3>
       <div class="compare col-lg-4"><span class="difference-info">There's no test result for this. Please run the test first.</span></div>
     </div>);
   }
@@ -320,6 +369,31 @@ export default class TwoWebsiteComparsionItemPage extends Component {
     }
     else {
       return (<div class="compare col-lg-4"><img src={url}/></div>);
+    }
+  }
+
+  renderNewScenario() {
+    if (this.state.newScenario) {
+      return (
+        <div class="add-scenario">
+          <div class="compare-url-title"><input type="text" placeholder="Scenario name" value={this.state.newScenarioData.name} onChange={this.changeValueOfPageUrlPair.bind(this, "name")}/>
+          </div>
+          <div class="right-buttons"><a onClick={this.cancelNewScenario.bind(this)}>Cancel</a></div>
+          <div class="urls row">
+            <div class="url1 col-lg-5">
+              <div class="url1-title">URL1</div>
+              <div class="url1-input"><input type="text" placeholder="Reference URL" value={this.state.newScenarioData.source} onChange={this.changeValueOfPageUrlPair.bind(this, "source")}/>
+              </div>
+            </div>
+            <div class="url-vs-text col-lg-auto"> VS</div>
+            <div class="url2 col-lg-5">
+              <div class="url2-title">URL2</div>
+              <div class="url2-input"><input type="text" placeholder="Test URL" value={this.state.newScenarioData.destination} onChange={this.changeValueOfPageUrlPair.bind(this, "destination")}/>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
     }
   }
 }

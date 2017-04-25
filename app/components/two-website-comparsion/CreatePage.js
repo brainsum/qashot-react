@@ -146,7 +146,11 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
       errorMessage = (
         <div class="alert alert-danger alert-dismissable" key="error">
           <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>ERROR!</strong> {error.message} : {error.response.data.message}
+          <strong>ERROR!</strong> {error.message} : {error.response.data.message} <br />
+          {error.stack !== null && error.stack !== "" ? (<strong>Stack: </strong>) : ""}
+          {error.stack !== null && error.stack !== "" ? (error.stack.split('\n').map((item, key) => {
+            return <span key={key}>{item}<br/></span>
+          })) : ""}
         </div>
       );
     }

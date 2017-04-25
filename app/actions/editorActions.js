@@ -76,9 +76,9 @@ export function saveTest(curState) {
 
   curState.viewports.viewportsItems.forEach((viewportItem) => {
     viewport.push({
-      name: viewportItem.name,
-      width: viewportItem.width,
-      height: viewportItem.height,
+      field_name: viewportItem.name,
+      field_width: viewportItem.width,
+      field_height: viewportItem.height,
     });
   });
 
@@ -97,7 +97,7 @@ export function saveTest(curState) {
       name: [ { value: curState.title } ],
       type: [ { target_id: 'a_b' } ],
       field_scenario: scenarios,
-      viewport: viewport,
+      field_viewport: viewport,
     }),
   }
 }
