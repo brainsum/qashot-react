@@ -1,0 +1,77 @@
+
+.container
+  &__inner
+    padding-left: 2rem
+    padding-right: 2rem
+
+.page
+  &__header
+    height: 0
+    overflow: hidden
+    padding-bottom: 25%
+    background-image: url(/img/header.jpg)
+    background-size: cover
+    background-position: center center
+
+  &__content
+    padding-top: 4rem
+    padding-bottom: 4rem
+
+  &__footer
+    padding: 4rem 2rem
+    background-color: $purple
+    color: #a4abbf
+    font-weight: 600
+
+.header
+  position: relative
+
+  &::before
+    content: ''
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    background-color: rgba($purple, .5)
+
+  &__title
+    position: absolute
+    top: 50%
+    transform: translateY(-50%)
+
+    &,
+    &:hover,
+    &:focus
+      color: #fff
+      text-decoration: none
+
+    h1
+      font-weight: 600
+      font-size: 4rem
+
+.bg-white
+  background: #fff
+
+.loading-spinner
+  display: inline-block
+  width: 2em
+  height: 2em
+  line-height: 2em
+  border-top: .25em solid $purple
+  border-right: .25em solid $purple
+  border-bottom: .25em solid $purple
+  border-left: .25em solid transparent
+  border-radius: 50%
+  animation: spin .5s infinite linear
+
+@keyframes spin
+  0%
+    transform: rotate(0deg)
+
+  100%
+    transform: rotate(360deg)
+
+.test-cases img
+  width: 100%
+  height: auto

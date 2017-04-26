@@ -1,0 +1,96 @@
+
+.test-info-header
+  background-color: #ebebeb
+  border-radius: 7px
+  border: 0 solid rgb(200, 200, 200)
+  width: 1161px
+  margin: 32px 0 32px 0
+  padding: 30px
+  min-height: 155px
+  display: table
+
+  .result
+    font-size: 32px
+    display: table-cell
+    vertical-align: middle
+
+    div
+      margin-bottom: .3em
+      &.success
+        color: $success
+
+        .passed-number
+          padding: .5em .6em
+          border-radius: 8px
+          border: 0 solid $success
+          font-size: 17px
+          vertical-align: middle
+          background-color: $success
+          color: white
+          margin-left: 30px
+
+      &.failed
+        color: $failed
+
+        .failed-number
+          padding: .5em .6em
+          border-radius: 8px
+          border: 0 solid $failed
+          font-size: 17px
+          vertical-align: middle
+          background-color: $failed
+          color: white
+          margin-left: 50px
+
+  .middle-data
+    padding-left: 5em
+    display: table-cell
+    vertical-align: middle
+
+    .test-runtime
+      color: #9c9c9c
+      font-size: 14px
+      margin-bottom: .5em
+
+    a
+      margin-left: .5em
+
+  .view-ports
+    display: table-cell
+    vertical-align: middle
+    margin-left: 3em
+    padding-left: 3em
+    border-left: 1px dashed black
+    min-height: 114px
+
+    .viewports-list
+      font-weight: bold
+
+.test-links
+  a
+    float: left
+
+  .display-radios
+    float: right
+
+  label
+    margin-left: 10px
+
+    input
+      margin: auto 5px
+
+    &.radio-expand-failed-only
+      color: $failed
+      font-weight: bold
+
+
+.comparation:before
+  background-size: 28px 28px
+  background: url("/img/compare.svg") center center
+  content: ""
+  height: 28px
+  width: 28px
+  display: inline-block
+  border-radius: 50%
+  border: 3px solid black
+  margin-right: 10px

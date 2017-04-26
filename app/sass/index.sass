@@ -1,83 +1,58 @@
-$purple: #5f6273
+@import "default-variables"
 
-$body-bg: #eaeaea
-$font-family-sans-serif: 'Roboto'
+@import "pages/general"
+@import "pages/tests-page"
+@import "pages/item-page"
 
-@import "../../node_modules/bootstrap/scss/bootstrap"
+// BOOTSTRAP START.
+// Core variables and mixins
+@import "../../node_modules/bootstrap/scss/variables"
+@import "../../node_modules/bootstrap/scss/mixins"
+@import "../../node_modules/bootstrap/scss/custom"
 
-.container
-  &__inner
-    padding-left: 4rem
-    padding-right: 4rem
+// Reset and dependencies
+@import "../../node_modules/bootstrap/scss/normalize"
+@import "../../node_modules/bootstrap/scss/print"
 
-.page
-  &__header
-    height: 0
-    overflow: hidden
-    padding-bottom: 25%
-    background-image: url(/img/header.jpg)
-    background-size: cover
-    background-position: center center
+// Core CSS
+@import "../../node_modules/bootstrap/scss/reboot"
+@import "../../node_modules/bootstrap/scss/type"
+@import "../../node_modules/bootstrap/scss/images"
+@import "../../node_modules/bootstrap/scss/code"
+@import "../../node_modules/bootstrap/scss/grid"
+@import "../../node_modules/bootstrap/scss/tables"
+@import "../../node_modules/bootstrap/scss/forms"
+@import "../../node_modules/bootstrap/scss/buttons"
 
-  &__content
-    padding-top: 4rem
-    padding-bottom: 4rem
+// Components
+@import "../../node_modules/bootstrap/scss/transitions"
+@import "../../node_modules/bootstrap/scss/dropdown"
+@import "../../node_modules/bootstrap/scss/button-group"
+@import "../../node_modules/bootstrap/scss/input-group"
+@import "../../node_modules/bootstrap/scss/custom-forms"
+@import "../../node_modules/bootstrap/scss/nav"
+@import "../../node_modules/bootstrap/scss/navbar"
+@import "../../node_modules/bootstrap/scss/card"
+@import "../../node_modules/bootstrap/scss/breadcrumb"
+@import "../../node_modules/bootstrap/scss/pagination"
+@import "../../node_modules/bootstrap/scss/badge"
+@import "../../node_modules/bootstrap/scss/jumbotron"
+@import "../../node_modules/bootstrap/scss/alert"
+@import "../../node_modules/bootstrap/scss/progress"
+@import "../../node_modules/bootstrap/scss/media"
+@import "../../node_modules/bootstrap/scss/list-group"
+@import "../../node_modules/bootstrap/scss/responsive-embed"
+@import "../../node_modules/bootstrap/scss/close"
 
-  &__footer
-    padding: 4rem 2rem
-    background-color: $purple
-    color: #a4abbf
-    font-weight: 600
+// Components w/ JavaScript
+@import "../../node_modules/bootstrap/scss/modal"
+@import "../../node_modules/bootstrap/scss/tooltip"
+@import "../../node_modules/bootstrap/scss/popover"
+@import "../../node_modules/bootstrap/scss/carousel"
 
-.header
-  position: relative
+// Utility classes
+@import "../../node_modules/bootstrap/scss/utilities"
 
-  &::before
-    content: ''
-    position: absolute
-    top: 0
-    right: 0
-    bottom: 0
-    left: 0
-    background-color: rgba($purple, .5)
+// BOOTSTRAP END.
 
-  &__title
-    position: absolute
-    top: 50%
-    transform: translateY(-50%)
-
-    &,
-    &:hover,
-    &:focus
-      color: #fff
-      text-decoration: none
-
-    h1
-      font-weight: 600
-      font-size: 4rem
-
-.bg-white
-  background: #fff
-
-.loading-spinner
-  display: inline-block
-  width: 2em
-  height: 2em
-  line-height: 2em
-  border-top: .25em solid $purple
-  border-right: .25em solid $purple
-  border-bottom: .25em solid $purple
-  border-left: .25em solid transparent
-  border-radius: 50%
-  animation: spin .5s infinite linear
-
-@keyframes spin
-  0%
-    transform: rotate(0deg)
-
-  100%
-    transform: rotate(360deg)
-
-.test-cases img
-  width: 100%
-  height: auto
+@import "overrides"

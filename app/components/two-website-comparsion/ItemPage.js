@@ -128,15 +128,16 @@ export default class TwoWebsiteComparsionItemPage extends Component {
       return (<div>
         <div class="test-head">
           <span>Comparison's name</span>
-          <h1>{data.name[0].value}</h1>
+          <h1 class="comparation">{data.name[0].value}</h1>
           {this.renderTestHeader()}
           <div class="test-links">
             <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
             <div class="display-radios">
-              {display.map(([id, value, text], i) => <label for={id} key={i}><input type="radio" name="display" value={value} id={id} onChange={this.displayMode.bind(this)} checked={this.state.displayMode === value} />{text}</label>)}
+              {display.map(([id, value, text], i) => <label for={id} key={i} class={id}><input type="radio" name="display" value={value} id={id} onChange={this.displayMode.bind(this)} checked={this.state.displayMode === value} />{text}</label>)}
             </div>
           </div>
         </div>
+        <div class="clearfix"/>
           {this.renderMessages()}
           { isLoading && testIsRunning ? "" : this.renderTestResults() }
         <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
@@ -194,13 +195,13 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
     return (<div class="test-info-header">
       <div class="result">
-        <div>Passed <span class="passed-number">{isData ? data.metadata_last_run[0].passed_count : "?"}</span></div>
-        <div>Failed <span class="failed-number">{isData ? data.metadata_last_run[0].failed_count : "?"}</span></div>
+        <div class="success">Passed <span class="passed-number">{isData ? data.metadata_last_run[0].passed_count : "?"}</span></div>
+        <div class="failed">Failed <span class="failed-number">{isData ? data.metadata_last_run[0].failed_count : "?"}</span></div>
       </div>
-      <div>
-        <div class="compared-time">Compared at: {isData ? data.metadata_last_run[0].datetime : "Not compared yet"}</div>
+      <div class="middle-data">
+        <div class="compared-time">Compared at: {isData ? <strong>{data.metadata_last_run[0].datetime}</strong> : "Not compared yet"}</div>
         <div class="test-runtime">(Test run time: {isData? data.metadata_last_run[0].duration : "Not runned yet"})</div>
-        <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this)}>
+        <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this)}>
           {data.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
         </button>
         <a>
@@ -208,6 +209,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
         </a>
       </div>
       {this.renderViewports()}
+      <div class="clearfix" />
     </div>);
   }
 
@@ -237,11 +239,13 @@ export default class TwoWebsiteComparsionItemPage extends Component {
     else {
       return (
         <div class="view-ports">
-          <div>Viewports (<a onClick={this.editViewports.bind(this)}>edit</a>)</div>
-          <div class="viewports-list">
-            {data.field_viewport.map((viewport, index) => (
-              <div key={index}>{viewport.field_width}x{viewport.field_height} ({viewport.field_name})</div>
-            ))}
+          <div class="view-ports-inside">
+            <div>Viewports (<a onClick={this.editViewports.bind(this)}>edit</a>)</div>
+            <div class="viewports-list">
+              {data.field_viewport.map((viewport, index) => (
+                <div key={index}>{viewport.field_width}x{viewport.field_height} ({viewport.field_name})</div>
+              ))}
+            </div>
           </div>
         </div>
       );
