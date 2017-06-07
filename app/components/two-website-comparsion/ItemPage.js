@@ -266,10 +266,10 @@ export default class TwoWebsiteComparsionItemPage extends Component {
         {data.field_scenario.map((scenario, i) => (
           <div key={i}>
             <div class="scenario-info">
-              <h2>{scenario.label} (<a onClick={this.editScenario.bind(this, i)}>edit</a>)</h2>
+              <h2>{scenario.field_label} (<a onClick={this.editScenario.bind(this, i)}>edit</a>)</h2>
               <div class="row">
-                <div class="col-lg-4">{scenario.referenceUrl}</div>
-                <div class="col-lg-4">{scenario.testUrl}</div>
+                <div class="col-lg-4">{scenario.field_reference_url}</div>
+                <div class="col-lg-4">{scenario.field_test_url}</div>
                 <div class="col-lg-4">Difference</div>
               </div>
             </div>
