@@ -109,14 +109,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
   }
 
   runTest() {
-    this.props.dispatch(runTest(this.props.data.id[0].value));
-  }
-
-  makeArray(a,b) {
-    let arr = new Array(a);
-    for(let i = 0; i<a; i++)
-      arr[i] = new Array(b);
-    return arr;
+    this.props.dispatch(runTest(this.props.data.id));
   }
 
   render() {
@@ -128,7 +121,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
       return (<div>
         <div class="test-head">
           <span>Comparison's name</span>
-          <h1 class="comparation">{data.name[0].value}</h1>
+          <h1 class="comparation">{data.name}</h1>
           {this.renderTestHeader()}
           <div class="test-links">
             <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
@@ -256,10 +249,13 @@ export default class TwoWebsiteComparsionItemPage extends Component {
     const {data} = this.props;
 
     if (data.result.length > 0) {
-      this.results = this.makeArray(data.field_scenario.length, data.field_viewport.length);
+      this.results = [];
 
       data.result.map((res, i) => {
-        this.results[res.scenario_delta][res.viewport_delta] = res;
+        if (!Array.isArray(this.results[res.scenario_id])) {
+          this.results[res.scenario_id] = [];
+        }
+        this.results[res.scenario_id][res.viewport_id] = res;
       });
 
       return(<div class="test-cases">
@@ -276,7 +272,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
             <div class="viewports">
               {data.field_viewport.map((viewportItem, j) =>
-                  this.renderTestResultsViewports(i, j, viewportItem)
+                  this.renderTestResultsViewports(scenario.id, viewportItem.id, viewportItem)
               )}
             </div>
           </div>
