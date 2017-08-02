@@ -48,6 +48,27 @@ export default function reducer(state={
         }
       };
     }
+    case "UPDATE_CURRENT_PAGE_NUMBER": {
+      let pagination = {
+        ...state.pagination,
+        links: {
+          self: "api/rest/v1/test_list?_format=json&page=" + action.payload + "&limit=" + state.pagination.page
+        },
+        page: action.payload,
+      };
+
+      if (action.payload > 1) {
+        pagination.links.first = "api/rest/v1/test_list?_format=json&page=1&limit=" + pagination.limit;
+        pagination.links.previous = "api/rest/v1/test_list?_format=json&page=" + (action.payload - 1) + "&limit=" + pagination.limit;
+      }
+
+      if (action.payload < pagination.total_pages) {
+        pagination.links.next = "api/rest/v1/test_list?_format=json&page=" + (action.payload + 1) + "&limit=" + pagination.limit;
+        pagination.links.last = "api/rest/v1/test_list?_format=json&page=" + pagination.total_pages + "&limit=" + pagination.limit;
+      }
+
+      return {...state, pagination: pagination}
+    }
     case "RUN_TEST_ONLY_LISTER_PENDING": {
       return {...state, fetching: true};
     }

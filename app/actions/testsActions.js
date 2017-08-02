@@ -4,7 +4,6 @@ import store from "../store";
 
 export function fetchTests() {
   let state = store.getState();
-  console.log(state);
   if (!state.tests.pages[1]) {
     return {
       type: "FETCH_TESTS",
@@ -13,17 +12,28 @@ export function fetchTests() {
   }
   else {
     return {
-      type: "DO_NOTHING",
-      payload: null,
+      type: "UPDATE_CURRENT_PAGE_NUMBER",
+      payload: 1,
     }
   }
 }
 
 export function fetchTestsByUrl(url) {
-  return {
-    type: "FETCH_TESTS",
-    payload: axios.get(url)
-  };
+  let state = store.getState();
+  let page = parseInt(url.match(/page=([0-9]*)/i)[1]);
+
+  if (!state.tests.pages[page]) {
+    return {
+      type: "FETCH_TESTS",
+      payload: axios.get(url)
+    };
+  }
+  else {
+    return {
+      type: "UPDATE_CURRENT_PAGE_NUMBER",
+      payload: page,
+    }
+  }
 }
 
 export function fetchTestsByPageAndLimit(page, limit) {
@@ -36,8 +46,8 @@ export function fetchTestsByPageAndLimit(page, limit) {
   }
   else {
     return {
-      type: "DO_NOTHING",
-      payload: null,
+      type: "UPDATE_CURRENT_PAGE_NUMBER",
+      payload: page,
     }
   }
 }

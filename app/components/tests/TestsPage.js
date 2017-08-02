@@ -121,7 +121,7 @@ export default class TestsPage extends Component {
   renderPagination() {
     const { pagination } = this.props;
 
-    if (!TestsPage.isEmpty(pagination) && false) {
+    if (pagination.total_pages) {
       const dotDotDot = <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events:none;"><span aria-label="More">…</span></a></li>;
 
       let pageNumbers = [];

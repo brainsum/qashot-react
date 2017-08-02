@@ -118,7 +118,6 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
   render() {
     const { isLoading, testIsRunning, loaded, data } = this.props;
-    console.log(this.props);
 
     let display = [["radio-expand-all", "exp-all", "Expand all"], ["radio-collapse-all", "coll-all", "Collapse all"], ["radio-expand-failed-only", "exp-fail", "Expand the fails only"]];
 
