@@ -1,5 +1,12 @@
+import { normalize } from 'normalizr';
+import { testListerSchema, runRespondSchema } from '../schema/mainApiSchemas';
+import merge from 'lodash/merge';
+
 export default function reducer(state={
-  tests: [],
+  pages: {"0": []},
+  pagination: {
+    page: 0,
+  },
   fetching: false,
   fetched: false,
   error: null,
@@ -15,62 +22,57 @@ export default function reducer(state={
       return {...state, fetching: false, error: action.payload};
     }
     case "FETCH_TESTS_FULFILLED": {
+      let norm = normalize(action.payload.data, testListerSchema);
+
+      let pageItems = [...norm.result.entity];
+      if (state.pages[norm.result.pagination.page]) {
+        pageItems = [
+          ...new Set([
+            ...state.pages[norm.result.pagination.page],
+            ...norm.result.entity,
+          ])
+        ];
+      }
+
       return {
         ...state,
         fetching: false,
         fetched: true,
-        tests: action.payload,
+        pages: {
+          ...state.pages,
+          [norm.result.pagination.page]: pageItems
+        },
+        pagination: {
+          ...state.pagination,
+          ...norm.result.pagination,
+        }
       };
     }
     case "RUN_TEST_ONLY_LISTER_PENDING": {
       return {...state, fetching: true};
     }
     case "RUN_TEST_ONLY_LISTER_REJECTED": {
-      let newState = {...state, fetching: false, error: action.payload};
-      //newState.deleting.splice(, 1);
-      return newState;
+      return {...state, fetching: false, error: action.payload};
     }
     case "RUN_TEST_ONLY_LISTER_FULFILLED": {
-      let newState = {
+      return {
         ...state,
         fetching: false,
         fetched: true,
-        //tests: action.payload,
       };
-      newState.running.splice(action.payload.data.entity.id[0].value, 1);
-
-      let i = 0;
-      let BreakException = {};
-      try {
-        newState.tests.data.entity.forEach((item) => {
-          if (item.id[0].value == action.payload.data.entity.id[0].value) {
-            throw BreakException;
-          }
-          i++;
-        });
-      } catch (e) {
-        if (e !== BreakException) throw e;
-      }
-      newState.tests.data.entity[i] = action.payload.data.entity;
-      return newState;
     }
     case "DELETE_TEST_LISTER_PENDING": {
       return {...state, fetching: true};
     }
     case "DELETE_TEST_LISTER_REJECTED": {
-      let newState = {...state, fetching: false, error: action.payload};
-      //newState.deleting.splice(, 1);
-      return newState;
+      return {...state, fetching: false, error: action.payload};
     }
     case "DELETE_TEST_LISTER_FULFILLED": {
-      let newState = {
+      return {
         ...state,
         fetching: false,
         fetched: true,
-        //tests: action.payload,
       };
-      //newState.deleting.splice(action.payload, 1);
-      return newState;
     }
     case "DELETE_TEST_ID": {
       let newState = {...state};

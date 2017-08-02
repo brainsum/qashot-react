@@ -1,3 +1,6 @@
+import { normalize } from 'normalizr';
+import { testSchema } from '../schema/mainApiSchemas';
+
 export default function reducer(state={
   test: {},
   fetching: false,
@@ -38,14 +41,6 @@ export default function reducer(state={
         ...state,
         fetching: false,
         fetched: true,
-        test: {
-          config: action.payload.config,
-          data: action.payload.data.entity,
-          headers: action.payload.headers,
-          request: action.payload.request,
-          status: action.payload.status,
-          statusText: action.payload.statusText,
-        },
         message: null,
         testIsRunning: false,
         successMessage: action.payload.message,

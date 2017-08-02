@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Link } from 'react-router';
-//import { push } from 'react-router-redux';
-
 import { fetchTests, fetchTestsByUrl, fetchTestsByPageAndLimit } from '../../actions/testsActions';
 import { deleteTest, runTest } from "../../actions/testsActions";
 
@@ -11,7 +9,10 @@ import { deleteTest, runTest } from "../../actions/testsActions";
     isLoading: store.tests.fetching,
     deleting: store.tests.deleting,
     running: store.tests.running,
-    tests: store.tests.tests.data,
+    tests: store.entities.tests,
+    metadata_lifetimes: store.entities.metadata_lifetimes,
+    list: store.tests.pages[store.tests.pagination.page],
+    pagination: store.tests.pagination,
   };
 })
 export default class TestsPage extends Component {
@@ -25,6 +26,15 @@ export default class TestsPage extends Component {
 
   deleteTest(id) {
     this.props.dispatch(deleteTest(id))
+  }
+
+  static isEmpty(obj) {
+    for(let prop in obj) {
+      if(obj.hasOwnProperty(prop))
+        return false;
+    }
+
+    return JSON.stringify(obj) === JSON.stringify({});
   }
 
   render() {
@@ -57,7 +67,7 @@ export default class TestsPage extends Component {
   }
 
   renderTests() {
-    const { isLoading, tests, running, deleting } = this.props;
+    const { isLoading, tests, running, deleting, list, pagination, metadata_lifetimes } = this.props;
 
     if (isLoading && !tests) {
       return (
@@ -70,34 +80,37 @@ export default class TestsPage extends Component {
         </tbody>
       )
     }
-    if (tests) {
+    if (list) {
       return (
         <tbody>
-          {tests.entity.map((test, index) => (
-            <tr key={test.id[0].value}>
-              <td>{(tests.pagination.page - 1) * 10 + index + 1}</td>
-              <td>
-                <Link to={`/two-website-comparsion/${test.id[0].value}`}>
-                  {test.name[0].value}
-                </Link>
-              </td>
-              <td>{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].datetime : '-'}</td>
-              <td class="text-center">{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].passed_count : '-'}</td>
-              <td class="text-center">{test.metadata_last_run.length > 0 ? test.metadata_last_run[0].failed_count : '-'}</td>
-              <td>
-                {running[test.id[0].value] ? "Running..." :
-                  <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id[0].value)}>
-                    {test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
-                  </button>
-                }
-              </td>
-              <td>
-                {deleting[test.id[0].value] ? "Deleting..." :
-                  <button class="btn btn-link btn-sm" onClick={this.deleteTest.bind(this, test.id[0].value)}>Delete</button>
-                }
-              </td>
-            </tr>
-          ))}
+          {list.map((testId, index) => {
+            let test = tests[testId];
+            return (
+              <tr key={test.id}>
+                <td>{(pagination.page - 1) * 10 + index + 1}</td>
+                <td>
+                  <Link to={`/two-website-comparsion/${test.id}`}>
+                    {test.name}
+                  </Link>
+                </td>
+                <td>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].datetime : '-'}</td>
+                <td class="text-center">{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].passed_count : '-'}</td>
+                <td class="text-center">{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].failed_count : '-'}</td>
+                <td>
+                  {running[test.id] ? "Running..." :
+                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id)}>
+                      {test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
+                    </button>
+                  }
+                </td>
+                <td>
+                  {deleting[test.id] ? "Deleting..." :
+                    <button class="btn btn-link btn-sm" onClick={this.deleteTest.bind(this, test.id)}>Delete</button>
+                  }
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       );
     }
@@ -106,45 +119,45 @@ export default class TestsPage extends Component {
   }
 
   renderPagination() {
-    const { tests } = this.props;
+    const { pagination } = this.props;
 
-    if (tests) {
+    if (!TestsPage.isEmpty(pagination) && false) {
       const dotDotDot = <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events:none;"><span aria-label="More">…</span></a></li>;
 
       let pageNumbers = [];
-      for (let i = 1; i <= tests.pagination.total_pages; i++) {
-        pageNumbers.push(<li class={tests.pagination.page == i ? 'page-item active' : 'page-item'} key={i} onClick={this.pagerGotoPageByNumber.bind(this, i, tests.pagination.limit)}><a class="page-link" href="#">{i}</a></li>);
+      for (let i = 1; i <= pagination.total_pages; i++) {
+        pageNumbers.push(<li class={pagination.page == i ? 'page-item active' : 'page-item'} key={i} onClick={this.pagerGotoPageByNumber.bind(this, i, pagination.limit)}><a class="page-link" href="#">{i}</a></li>);
       }
 
       let previous, first, next, last;
 
-      if (tests.pagination.links.first) {
+      if (pagination.links.first) {
         first = (<li class="page-item">
-          <a class="page-link" href="#" aria-label="First" onClick={this.pagerGotoPage.bind(this, tests.pagination.links.first)}>
+          <a class="page-link" href="#" aria-label="First" onClick={this.pagerGotoPage.bind(this, pagination.links.first)}>
             <span aria-hidden="true">&laquo;</span>
             <span class="sr-only">First</span>
           </a>
         </li>);
       }
-      if (tests.pagination.links.previous) {
+      if (pagination.links.previous) {
         previous = (<li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous" onClick={this.pagerGotoPage.bind(this, tests.pagination.links.previous)}>
+          <a class="page-link" href="#" aria-label="Previous" onClick={this.pagerGotoPage.bind(this, pagination.links.previous)}>
             <span aria-hidden="true">‹</span>
             <span class="sr-only">Previous</span>
           </a>
         </li>);
       }
-      if (tests.pagination.links.next) {
+      if (pagination.links.next) {
         next = (<li class="page-item">
-          <a class="page-link" href="#" aria-label="Next" onClick={this.pagerGotoPage.bind(this, tests.pagination.links.next)}>
+          <a class="page-link" href="#" aria-label="Next" onClick={this.pagerGotoPage.bind(this, pagination.links.next)}>
             <span aria-hidden="true">›</span>
             <span class="sr-only">Next</span>
           </a>
         </li>);
       }
-      if (tests.pagination.links.last) {
+      if (pagination.links.last) {
         last = (<li class="page-item">
-          <a class="page-link" href="#" aria-label="Last" onClick={this.pagerGotoPage.bind(this, tests.pagination.links.last)}>
+          <a class="page-link" href="#" aria-label="Last" onClick={this.pagerGotoPage.bind(this, pagination.links.last)}>
             <span aria-hidden="true">&raquo;</span>
             <span class="sr-only">Last</span>
           </a>

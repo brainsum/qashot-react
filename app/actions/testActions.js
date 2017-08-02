@@ -1,17 +1,27 @@
 import axios from '../utils/axios';
 import {generateTestUrl} from "../utils/helper";
+import store from "../store";
 
 export function fetchTest(id) {
-  return {
-    type: "FETCH_TEST",
-    payload: axios.get(`api/rest/v1/qa_shot_test/${id}?_format=json`)
-  };
+  let state = store.getState();
+  if (!state.entities.tests[id] || !state.entities.tests[id].uuid) {
+    return {
+      type: "FETCH_TEST",
+      payload: axios.get(`api/rest/v1/qa_shot_test/${id}?_format=json`)
+    };
+  }
+  else {
+    return {
+      type: "DO_NOTHING",
+      payload: null,
+    }
+  }
 }
 
 export function runTest(id) {
   return {
     type: "RUN_TEST_ONLY",
-    payload: axios.post('api/rest/v1/qa_shot_test/' + id + '/run?_format=json', {
+    payload: axios.post('api/rest/v1/qa_shot_test/' + id + '/queue?_format=json', {
       test_stage: "",
       type: "a_b",
       frontend_url: generateTestUrl(id),

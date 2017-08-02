@@ -7,11 +7,15 @@ import {
   runTest
 } from '../../actions/testActions';
 
-@connect((store) => {
+@connect((store, props) => {
   return {
     isLoading: store.test.fetching,
     loaded: store.test.fetched,
-    data: store.test.test.data,
+    data: store.entities.tests[props.params.id],
+    metadata_lifetimes: store.entities.metadata_lifetimes,
+    results: store.entities.results,
+    scenarios: store.entities.scenarios,
+    viewports: store.entities.viewports,
     message: store.test.message,
     sMessage: store.test.successMessage,
     error: store.test.error,
@@ -114,6 +118,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
   render() {
     const { isLoading, testIsRunning, loaded, data } = this.props;
+    console.log(this.props);
 
     let display = [["radio-expand-all", "exp-all", "Expand all"], ["radio-collapse-all", "coll-all", "Collapse all"], ["radio-expand-failed-only", "exp-fail", "Expand the fails only"]];
 
@@ -182,18 +187,18 @@ export default class TwoWebsiteComparsionItemPage extends Component {
   }
 
   renderTestHeader() {
-    const {data} = this.props;
+    const {data, metadata_lifetimes} = this.props;
 
     let isData = data.metadata_last_run.length > 0;
 
     return (<div class="test-info-header">
       <div class="result">
-        <div class="success">Passed <span class="passed-number">{isData ? data.metadata_last_run[0].passed_count : "?"}</span></div>
-        <div class="failed">Failed <span class="failed-number">{isData ? data.metadata_last_run[0].failed_count : "?"}</span></div>
+        <div class="success">Passed <span class="passed-number">{isData ? metadata_lifetimes[data.metadata_last_run[0]].passed_count : "?"}</span></div>
+        <div class="failed">Failed <span class="failed-number">{isData ? metadata_lifetimes[data.metadata_last_run[0]].failed_count : "?"}</span></div>
       </div>
       <div class="middle-data">
-        <div class="compared-time">Compared at: {isData ? <strong>{data.metadata_last_run[0].datetime}</strong> : "Not compared yet"}</div>
-        <div class="test-runtime">(Test run time: {isData? data.metadata_last_run[0].duration : "Not runned yet"})</div>
+        <div class="compared-time">Compared at: {isData ? <strong>{metadata_lifetimes[data.metadata_last_run[0]].datetime}</strong> : "Not compared yet"}</div>
+        <div class="test-runtime">(Test run time: {isData? metadata_lifetimes[data.metadata_last_run[0]].duration : "Not runned yet"})</div>
         <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this)}>
           {data.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
         </button>
@@ -207,15 +212,15 @@ export default class TwoWebsiteComparsionItemPage extends Component {
   }
 
   renderViewports() {
-    const {data} = this.props;
+    const {data, viewports} = this.props;
 
     if (this.state.viewportsEditable) {
       let viewportsItems = [];
       for (let i = 0; i < data.field_viewport.length; i++) {
         viewportsItems.push(<div key={i}>
-          {i + 1}. <input type="text" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={data.field_viewport[i].field_width} />*
-          <input type="text" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={data.field_viewport[i].field_height} />
-          &nbsp;(<input type="text" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={data.field_viewport[i].field_name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
+          {i + 1}. <input type="text" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={viewports[data.field_viewport[i]].field_width} />*
+          <input type="text" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={viewports[data.field_viewport[i]].field_height} />
+          &nbsp;(<input type="text" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={viewports[data.field_viewport[i]].field_name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
         </div>);
       }
 
@@ -235,8 +240,8 @@ export default class TwoWebsiteComparsionItemPage extends Component {
           <div class="view-ports-inside">
             <div>Viewports (<a onClick={this.editViewports.bind(this)}>edit</a>)</div>
             <div class="viewports-list">
-              {data.field_viewport.map((viewport, index) => (
-                <div key={index}>{viewport.field_width}x{viewport.field_height} ({viewport.field_name})</div>
+              {data.field_viewport.map((viewportId, index) => (
+                <div key={index}>{viewports[viewportId].field_width}x{viewports[viewportId].field_height} ({viewports[viewportId].field_name})</div>
               ))}
             </div>
           </div>
@@ -246,20 +251,22 @@ export default class TwoWebsiteComparsionItemPage extends Component {
   }
 
   renderTestResults() {
-    const {data} = this.props;
+    const {data, results, scenarios, viewports} = this.props;
 
     if (data.result.length > 0) {
-      this.results = [];
+      this.results = {};
 
       data.result.map((res, i) => {
-        if (!Array.isArray(this.results[res.scenario_id])) {
-          this.results[res.scenario_id] = [];
+        if (!Array.isArray(this.results[results[res].scenario_id])) {
+          this.results[results[res].scenario_id] = {};
         }
-        this.results[res.scenario_id][res.viewport_id] = res;
+        this.results[results[res].scenario_id][results[res].viewport_id] = results[res];
       });
 
       return(<div class="test-cases">
-        {data.field_scenario.map((scenario, i) => (
+        {data.field_scenario.map((scenarioId, i) => {
+          let scenario = scenarios[scenarioId];
+          return (
           <div key={i}>
             <div class="scenario-info">
               <h2>{scenario.field_label} (<a onClick={this.editScenario.bind(this, i)}>edit</a>)</h2>
@@ -271,12 +278,12 @@ export default class TwoWebsiteComparsionItemPage extends Component {
             </div>
 
             <div class="viewports">
-              {data.field_viewport.map((viewportItem, j) =>
-                  this.renderTestResultsViewports(scenario.id, viewportItem.id, viewportItem)
+              {data.field_viewport.map((viewportId, j) =>
+                  this.renderTestResultsViewports(scenarioId, viewportId, viewports[viewportId])
               )}
             </div>
           </div>
-        ))}
+        )})}
         {this.renderNewScenario()}
       </div>);
     }
