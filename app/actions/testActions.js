@@ -7,7 +7,7 @@ export function fetchTest(id) {
   if (!state.entities.tests[id] || !state.entities.tests[id].uuid) {
     return {
       type: "FETCH_TEST",
-      payload: axios.get(`api/rest/v1/qa_shot_test/${id}?_format=json`)
+      payload: axios().get(`api/rest/v1/qa_shot_test/${id}?_format=json`)
     };
   }
   else {
@@ -21,7 +21,7 @@ export function fetchTest(id) {
 export function runTest(id) {
   return {
     type: "RUN_TEST_ONLY",
-    payload: axios.post('api/rest/v1/qa_shot_test/' + id + '/queue?_format=json', {
+    payload: axios().post('api/rest/v1/qa_shot_test/' + id + '/queue?_format=json', {
       test_stage: "",
       type: "a_b",
       frontend_url: generateTestUrl(id),
@@ -32,7 +32,7 @@ export function runTest(id) {
 export function deleteTest(id) {
   return {
     type: "DELETE_TEST",
-    payload: axios.delete('api/rest/v1/qa_shot_test/' + id + '?_format=json'),
+    payload: axios().delete('api/rest/v1/qa_shot_test/' + id + '?_format=json'),
   };
 }
 

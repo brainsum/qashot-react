@@ -93,7 +93,7 @@ export function saveTest(curState) {
 
   return {
     type: "SAVE_TEST",
-    payload: axios.post('api/rest/v1/qa_shot_test?_format=json', {
+    payload: axios().post('api/rest/v1/qa_shot_test?_format=json', {
       user_id: [ { target_id: 1 } ],
       name: [ { value: curState.title } ],
       type: [ { target_id: 'a_b' } ],
@@ -111,7 +111,7 @@ export function saveAndRunTest(curState) {
       if (!error && result && resultIsTest) {
         dispatch({
           type: "RUN_TEST",
-          payload: axios.post('api/rest/v1/qa_shot_test/' + result.data.id[0].value + '/run?_format=json', {
+          payload: axios().post('api/rest/v1/qa_shot_test/' + result.data.id[0].value + '/run?_format=json', {
             test_stage: "",
             type: "a_b",
             frontend_url: generateTestUrl(id),
