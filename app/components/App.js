@@ -26,7 +26,8 @@ export default class App extends Component {
     };
   }
 
-  login() {
+  login(e) {
+    e.preventDefault();
     this.props.dispatch(setUserLoginData(this.state.loginname, this.state.password));
     this.props.dispatch(userLogin());
     return false;
