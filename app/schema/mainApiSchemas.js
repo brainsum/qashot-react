@@ -14,7 +14,8 @@ const result = new schema.Entity('results');
 
 // Define your entity short list schema.
 const entityShortList = new schema.Entity('tests', {
-  metadata_last_run: [ metadata_lifetime ]
+  metadata_last_run: [ metadata_lifetime ],
+  metadata_lifetime: [ metadata_lifetime ]
 });
 
 // Define your test lister.
@@ -27,7 +28,6 @@ export const testSchema = new schema.Entity('tests', {
   field_scenario: [ scenario ],
   field_viewport: [ viewport ],
   metadata_last_run: [ metadata_lifetime ],
-  metadata_lifetime: [ metadata_lifetime ],
   result: [ result ]
 });
 

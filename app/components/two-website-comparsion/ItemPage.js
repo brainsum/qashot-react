@@ -117,11 +117,11 @@ export default class TwoWebsiteComparsionItemPage extends Component {
   }
 
   render() {
-    const { isLoading, testIsRunning, loaded, data } = this.props;
+    const { isLoading, testIsRunning, data } = this.props;
 
     let display = [["radio-expand-all", "exp-all", "Expand all"], ["radio-collapse-all", "coll-all", "Collapse all"], ["radio-expand-failed-only", "exp-fail", "Expand the fails only"]];
 
-    if (loaded) {
+    if (typeof data !== 'undefined' && data.uuid) {
       return (<div>
         <div class="test-head">
           <span>Comparison's name</span>
@@ -139,6 +139,18 @@ export default class TwoWebsiteComparsionItemPage extends Component {
           { isLoading && testIsRunning ? "" : this.renderTestResults() }
         <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
       </div>);
+    }
+    else if(typeof data !== 'undefined' && data.name) {
+      return (<div>
+        <div class="test-head">
+          <span>Comparison's name</span>
+          <h1 class="comparation">{data.name}</h1>
+        </div>
+        <div class="clearfix"/>
+        <div class="text-center">
+          <span class="loading-spinner"></span>
+        </div>
+       </div>);
     }
     else {
       return (

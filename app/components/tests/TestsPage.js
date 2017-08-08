@@ -11,65 +11,87 @@ import { deleteTest, runTest } from "../../actions/testsActions";
     running: store.tests.running,
     tests: store.entities.tests,
     metadata_lifetimes: store.entities.metadata_lifetimes,
-    list: store.tests.pages[store.tests.pagination.page],
-    pagination: store.tests.pagination,
+    listAB: store.tests.pagesAB[store.tests.paginationAB.page],
+    paginationAB: store.tests.paginationAB,
+    listBA: store.tests.pagesBA[store.tests.paginationBA.page],
+    paginationBA: store.tests.paginationBA,
   };
 })
 export default class TestsPage extends Component {
   componentDidMount() {
-    this.props.dispatch(fetchTests());
+    this.props.dispatch(fetchTests('a_b'));
+    this.props.dispatch(fetchTests('before_after'));
   }
 
-  runTest(id) {
-    this.props.dispatch(runTest(id))
+  runTest(id, stage) {
+    this.props.dispatch(runTest(id, stage))
   }
 
-  deleteTest(id) {
-    this.props.dispatch(deleteTest(id))
-  }
-
-  static isEmpty(obj) {
-    for(let prop in obj) {
-      if(obj.hasOwnProperty(prop))
-        return false;
-    }
-
-    return JSON.stringify(obj) === JSON.stringify({});
+  deleteTest(id, type) {
+    this.props.dispatch(deleteTest(id, type))
   }
 
   render() {
+    const { paginationAB, paginationBA } = this.props;
+
     return (
       <div>
-        <h2>
-          <strong>2 website</strong> comparsions (eg. Development VS Live)
-        </h2>
+        <div>
+          <h2>
+            <strong>2 website</strong> comparsions (eg. Development VS Live)
+          </h2>
 
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Session name</th>
-              <th>Last run</th>
-              <th class="text-center">Tests Passed</th>
-              <th class="text-center">Tests Failed</th>
-              <th width="1%"></th>
-              <th width="1%"></th>
-            </tr>
-          </thead>
-          {this.renderTests()}
-        </table>
-        {this.renderPagination()}
-        <Link to="/create-two-website-comparsion" class="btn btn-link btn-sm">
-          + Add new session
-        </Link>
+          <table class="table table-striped type--a-b">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Session name</th>
+                <th>Last run</th>
+                <th class="text-center">Tests Passed</th>
+                <th class="text-center">Tests Failed</th>
+                <th width="1%"></th>
+                <th width="1%"></th>
+              </tr>
+            </thead>
+            {this.renderABTests()}
+          </table>
+          {this.renderPagination(paginationAB, "a_b")}
+          <Link to="/create-two-website-comparsion" class="btn btn-link btn-sm">
+            + Add new session
+          </Link>
+        </div>
+        <div>
+          <h2>
+            <strong>BEFORE and AFTER</strong> comparison of 1 website
+          </h2>
+
+          <table class="table table-striped type--before-after">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Session name</th>
+                <th>"Before" shots</th>
+                <th>"After" shots</th>
+                <th class="text-center">Tests Passed</th>
+                <th class="text-center">Tests Failed</th>
+                <th width="1%"></th>
+              </tr>
+            </thead>
+            {this.renderBATests()}
+          </table>
+          {this.renderPagination(paginationBA, "before_after")}
+          <Link to="/create-two-website-comparsion" class="btn btn-link btn-sm">
+            + Add new session
+          </Link>
+        </div>
       </div>
     );
   }
 
-  renderTests() {
-    const { isLoading, tests, running, deleting, list, pagination, metadata_lifetimes } = this.props;
+  renderABTests() {
+    const { tests, running, deleting, listAB, paginationAB, metadata_lifetimes } = this.props;
 
-    if (isLoading && !tests) {
+    if (!listAB) {
       return (
         <tbody>
           <tr>
@@ -80,14 +102,23 @@ export default class TestsPage extends Component {
         </tbody>
       )
     }
-    if (list) {
+
+    if (listAB) {
+      if (listAB.length === 0) {
+        return (
+          <tbody>
+            <tr><td colSpan="7">There's no saved tests!</td></tr>
+          </tbody>
+        )
+      }
+
       return (
         <tbody>
-          {list.map((testId, index) => {
+          {listAB.map((testId, index) => {
             let test = tests[testId];
             return (
               <tr key={test.id}>
-                <td>{(pagination.page - 1) * 10 + index + 1}</td>
+                <td>{(paginationAB.page - 1) * 10 + index + 1}</td>
                 <td>
                   <Link to={`/two-website-comparsion/${test.id}`}>
                     {test.name}
@@ -98,14 +129,14 @@ export default class TestsPage extends Component {
                 <td class="text-center">{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].failed_count : '-'}</td>
                 <td>
                   {running[test.id] ? "Running..." :
-                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id)}>
+                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, '')}>
                       {test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
                     </button>
                   }
                 </td>
                 <td>
                   {deleting[test.id] ? "Deleting..." :
-                    <button class="btn btn-link btn-sm" onClick={this.deleteTest.bind(this, test.id)}>Delete</button>
+                    <button class="btn btn-link btn-sm" onClick={this.deleteTest.bind(this, test.id, 'a_b')}>Delete</button>
                   }
                 </td>
               </tr>
@@ -118,15 +149,91 @@ export default class TestsPage extends Component {
     return null;
   }
 
-  renderPagination() {
-    const { pagination } = this.props;
+  renderBATests() {
+    const { tests, running, deleting, listBA, paginationBA, metadata_lifetimes } = this.props;
 
+    if (!listBA) {
+      return (
+        <tbody>
+        <tr>
+          <td colSpan="7" class="text-center">
+            <div class="loading-spinner"></div>
+          </td>
+        </tr>
+        </tbody>
+      )
+    }
+
+    if (listBA) {
+      if (listBA.length === 0) {
+        return (
+          <tbody>
+            <tr><td colSpan="7">There's no saved tests!</td></tr>
+          </tbody>
+        )
+      }
+
+      return (
+        <tbody>
+        {listBA.map((testId, index) => {
+          let test = tests[testId];
+          let lastReference = {}, lastTest = {};
+
+          lastReference = metadata_lifetimes[test.metadata_last_run[0]];
+          lastTest = metadata_lifetimes[test.metadata_last_run[1]];
+
+          return (
+            <tr key={test.id}>
+              <td>{(paginationBA.page - 1) * 10 + index + 1}</td>
+              <td>
+                <Link to={`/two-website-comparsion/${test.id}`}>
+                  {test.name}
+                </Link>
+              </td>
+              <td>
+                {!jQuery.isEmptyObject(lastReference) ? lastReference.datetime : '-'}
+                {running[test.id] ? "Running..." :
+                  <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, 'reference')}>
+                    {!jQuery.isEmptyObject(lastReference) ? 'Recreate shots' : 'Create shots'}
+                  </button>
+                }
+              </td>
+              {!jQuery.isEmptyObject(lastReference) ? (
+                <td>
+                  {!jQuery.isEmptyObject(lastTest) ? lastTest.datetime : '-'}
+                  {running[test.id] ? "Running..." :
+                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, 'after')}>
+                      {!jQuery.isEmptyObject(lastTest) ? 'Re-run the test' : 'Run the test'}
+                    </button>
+                  }
+                </td>
+              ) : (
+                  <td>-</td>
+              )}
+              <td class="text-center">{!jQuery.isEmptyObject(lastTest) ? lastTest.passed_count : '-'}</td>
+              <td class="text-center">{!jQuery.isEmptyObject(lastTest) ? lastTest.failed_count : '-'}</td>
+              <td>
+                {deleting[test.id] ? "Deleting..." :
+                  <button class="btn btn-link btn-sm" onClick={this.deleteTest.bind(this, test.id, 'before_after')}>Delete</button>
+                }
+              </td>
+            </tr>
+          );
+        })}
+        </tbody>
+      );
+    }
+
+    return null;
+  }
+
+  renderPagination(pagination, type) {
     if (pagination.total_pages) {
       const dotDotDot = <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events:none;"><span aria-label="More">…</span></a></li>;
 
       let pageNumbers = [];
       for (let i = 1; i <= pagination.total_pages; i++) {
-        pageNumbers.push(<li class={pagination.page == i ? 'page-item active' : 'page-item'} key={i} onClick={this.pagerGotoPageByNumber.bind(this, i, pagination.limit)}><a class="page-link" href="#">{i}</a></li>);
+        pageNumbers.push(<li class={pagination.page == i ? 'page-item active' : 'page-item'} key={i} onClick={this.pagerGotoPageByNumber.bind(this, i, pagination.limit, type)}><a class="page-link" href="#">{i}</a></li>);
       }
 
       let previous, first, next, last;
@@ -165,7 +272,7 @@ export default class TestsPage extends Component {
       }
 
       return (
-        <nav aria-label="Page navigation for tests">
+        <nav aria-label="Page navigation for tests" class={type.replace('_', '-')}>
           <ul class="pagination justify-content-center">
             {first}
             {previous}
@@ -184,7 +291,7 @@ export default class TestsPage extends Component {
     this.props.dispatch(fetchTestsByUrl(url));
   }
 
-  pagerGotoPageByNumber(number, limit) {
-    this.props.dispatch(fetchTestsByPageAndLimit(number, limit));
+  pagerGotoPageByNumber(number, limit, type) {
+    this.props.dispatch(fetchTestsByPageAndLimit(number, limit, type));
   }
 }
