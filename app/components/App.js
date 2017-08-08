@@ -83,7 +83,8 @@ export default class App extends Component {
     return (
       <div class="container__inner page__content bg-white">
         <Match exactly pattern="/" component={TestsPage} />
-        <Match exactly pattern="/create-two-website-comparsion" component={CreateTwoWebsiteComparsionPage} />
+        <Match exactly pattern="/create/two-website-comparsion" component={CreateTwoWebsiteComparsionPage} />
+        <Match exactly pattern="/create/before-after-comparsion" component={CreateTwoWebsiteComparsionPage} />
         <Match exactly pattern="/two-website-comparsion/:id" component={TwoWebsiteComparsionPage} />
       </div>
     );

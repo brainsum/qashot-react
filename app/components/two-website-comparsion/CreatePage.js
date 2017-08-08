@@ -17,8 +17,26 @@ import {
   };
 })
 export default class TwoWebsiteComparsionCreatePage extends Component {
+  constructor(props) {
+    super(props);
+
+    let type = "";
+
+    if (props.pathname === "/create/two-website-comparsion") {
+      type = "a_b";
+    }
+    else if (props.pathname === "/create/before-after-comparsion") {
+      type = "before_after";
+    }
+
+    this.state = {
+      type: type,
+    };
+  }
+
   componentDidMount() {
     this.props.dispatch(loadTestEditor());
+    console.log(this);
   }
 
   editViewports() {
@@ -54,11 +72,11 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
   }
 
   save() {
-    this.props.dispatch(saveTest(this.props.settings));
+    this.props.dispatch(saveTest(this.props.settings, this.state.type));
   }
 
   runTest() {
-    this.props.dispatch(saveAndRunTest(this.props.settings));
+    this.props.dispatch(saveAndRunTest(this.props.settings, this.state.type));
   }
 
   render() {
@@ -72,21 +90,22 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
         <div class="right-buttons"><a onClick={this.deletePageUrlPair.bind(this, i)}>Delete</a></div>
         <div class="urls row">
           <div class="url1 col-lg-5">
-            <div class="url1-title">URL1</div>
+            <div class="url1-title">{this.state.type === "a_b" ? "URL1" : "URL"}</div>
             <div class="url1-input"><input type="text" placeholder="Reference URL" value={pagesItems[i].source} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_SOURCE")}/></div>
           </div>
-          <div class="url-vs-text col-lg-auto"> VS </div>
-          <div class="url2 col-lg-5">
+          {this.state.type === "a_b" ? <div class="url-vs-text col-lg-auto"> VS </div> :""}
+          {this.state.type === "a_b" ? (
+            <div class="url2 col-lg-5">
             <div class="url2-title">URL2</div>
             <div class="url2-input"><input type="text" placeholder="Test URL" value={pagesItems[i].destination} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_DESTINATION")}/></div>
-          </div>
+          </div>) : ""}
         </div>
       </div>);
     }
 
     return (
       <div>
-        <h2>Add a 2 website comparison name</h2>
+        <h2>Add {this.state.type === "a_b" ? "a 2 website" : "Before/After"} comparison name</h2>
         <div id="compare-site-title">
           <input type="text" placeholder="Test case title" value={this.props.settings.title} onChange={this.changeTitle.bind(this)} />
         </div>

@@ -72,7 +72,7 @@ export function changeValueOfTitle(value) {
   }
 }
 
-export function saveTest(curState) {
+export function saveTest(curState, type) {
   let scenarios = [], viewport = [];
 
   curState.viewports.viewportsItems.forEach((viewportItem) => {
@@ -94,16 +94,16 @@ export function saveTest(curState) {
   return {
     type: "SAVE_TEST",
     payload: axios().post('api/rest/v1/qa_shot_test?_format=json', {
-      user_id: [ { target_id: 1 } ],
-      name: [ { value: curState.title } ],
-      type: [ { target_id: 'a_b' } ],
+      user_id: 1,
+      name: curState.title,
+      type: type,
       field_scenario: scenarios,
       field_viewport: viewport,
     }),
   }
 }
 
-export function saveAndRunTest(curState) {
+export function saveAndRunTest(curState, type) {
   return (dispatch, getState) => {
     dispatch(saveTest(curState)).then(() => {
       let curState = getState();
@@ -111,9 +111,9 @@ export function saveAndRunTest(curState) {
       if (!error && result && resultIsTest) {
         dispatch({
           type: "RUN_TEST",
-          payload: axios().post('api/rest/v1/qa_shot_test/' + result.data.id[0].value + '/run?_format=json', {
-            test_stage: "",
-            type: "a_b",
+          payload: axios().post('api/rest/v1/qa_shot_test/' + result.data.id[0].value + '/queue?_format=json', {
+            test_stage: type === "a_b" ? "" : "reference",
+            type: type,
             frontend_url: generateTestUrl(id),
           }),
         });

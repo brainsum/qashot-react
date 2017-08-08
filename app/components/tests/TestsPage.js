@@ -56,7 +56,7 @@ export default class TestsPage extends Component {
             {this.renderABTests()}
           </table>
           {this.renderPagination(paginationAB, "a_b")}
-          <Link to="/create-two-website-comparsion" class="btn btn-link btn-sm">
+          <Link to="/create/two-website-comparsion" class="btn btn-link btn-sm">
             + Add new session
           </Link>
         </div>
@@ -80,7 +80,7 @@ export default class TestsPage extends Component {
             {this.renderBATests()}
           </table>
           {this.renderPagination(paginationBA, "before_after")}
-          <Link to="/create-two-website-comparsion" class="btn btn-link btn-sm">
+          <Link to="/create/before-after-comparsion" class="btn btn-link btn-sm">
             + Add new session
           </Link>
         </div>
