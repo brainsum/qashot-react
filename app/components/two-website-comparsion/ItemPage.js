@@ -201,15 +201,16 @@ export default class TwoWebsiteComparsionItemPage extends Component {
     const {data, metadata_lifetimes} = this.props;
 
     let isData = data.metadata_last_run.length > 0;
+    let lastRun = data.metadata_last_run.length === 2 ? data.metadata_last_run[1] : data.metadata_last_run[0];
 
     return (<div class="test-info-header">
       <div class="result">
-        <div class="success">Passed <span class="passed-number">{isData ? metadata_lifetimes[data.metadata_last_run[0]].passed_count : "?"}</span></div>
-        <div class="failed">Failed <span class="failed-number">{isData ? metadata_lifetimes[data.metadata_last_run[0]].failed_count : "?"}</span></div>
+        <div class="success">Passed <span class="passed-number">{isData ? metadata_lifetimes[lastRun].passed_count : "?"}</span></div>
+        <div class="failed">Failed <span class="failed-number">{isData ? metadata_lifetimes[lastRun].failed_count : "?"}</span></div>
       </div>
       <div class="middle-data">
-        <div class="compared-time">Compared at: {isData ? <strong>{metadata_lifetimes[data.metadata_last_run[0]].datetime}</strong> : "Not compared yet"}</div>
-        <div class="test-runtime">(Test run time: {isData? metadata_lifetimes[data.metadata_last_run[0]].duration : "Not runned yet"})</div>
+        <div class="compared-time">Compared at: {isData ? <strong>{metadata_lifetimes[lastRun].datetime}</strong> : "Not compared yet"}</div>
+        <div class="test-runtime">(Test run time: {isData? metadata_lifetimes[lastRun].duration : "Not runned yet"})</div>
         <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this)}>
           {data.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
         </button>
@@ -268,7 +269,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
       this.results = {};
 
       data.result.map((res, i) => {
-        if (!Array.isArray(this.results[results[res].scenario_id])) {
+        if (this.results[results[res].scenario_id] === null || typeof this.results[results[res].scenario_id] !== 'object') {
           this.results[results[res].scenario_id] = {};
         }
         this.results[results[res].scenario_id][results[res].viewport_id] = results[res];
