@@ -85,9 +85,9 @@ export function saveTest(curState, type) {
 
   curState.pages.pagesItems.forEach((pageItems) => {
     scenarios.push({
-      label: pageItems.name,
-      referenceUrl: pageItems.source,
-      testUrl: pageItems.destination,
+      field_label: pageItems.name,
+      field_reference_url: pageItems.source,
+      field_test_url: pageItems.destination,
     });
   });
 
