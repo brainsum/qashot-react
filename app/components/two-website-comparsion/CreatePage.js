@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Link } from "react-router";
 import { fetchTest } from '../../actions/testActions';
+import { SketchPicker } from 'react-color';
 import {
   loadTestEditor,
   addNewPageUrlPair, addNewViewport,
   changeValueOfPageUrlPair,
   changeValueOfTitle, changeValueOfViewport, deletePageUrlPair, deleteViewport,
   editViewports,
-  saveTest, saveAndRunTest
+  saveTest, saveAndRunTest, changeValueOfColor, deleteHideValue,
+  changeOrAddHideValue, deleteRemoveValue, changeOrAddRemoveValue,
+  deleteTagsValue, changeOrAddTagsValue
 } from "../../actions/editorActions";
 
 @connect((store) => {
@@ -31,6 +34,7 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
 
     this.state = {
       type: type,
+      displayColorPicker: false,
     };
   }
 
@@ -79,10 +83,61 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
     this.props.dispatch(saveAndRunTest(this.props.settings, this.state.type));
   }
 
+  handleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker })
+  };
+
+  handleClose = () => {
+    this.setState({ displayColorPicker: false })
+  };
+
+  handleChange = (color) => {
+    this.props.dispatch(changeValueOfColor(color.hex));
+  };
+
+  changeHideValue(i, e) {
+    if (e.target.value === "" || e.target.value === null) {
+      this.props.dispatch(deleteHideValue(i));
+    }
+    else {
+      this.props.dispatch(changeOrAddHideValue(i, e.target.value));
+    }
+  }
+
+  changeRemoveValue(i, e) {
+    if (e.target.value === "" || e.target.value === null) {
+      this.props.dispatch(deleteRemoveValue(i));
+    }
+    else {
+      this.props.dispatch(changeOrAddRemoveValue(i, e.target.value));
+    }
+  }
+
+  changeTagsValue(i, e) {
+    if (e.target.value === "" || e.target.value === null) {
+      this.props.dispatch(deleteTagsValue(i));
+    }
+    else {
+      this.props.dispatch(changeOrAddTagsValue(i, e.target.value));
+    }
+  }
+
   render() {
     let pagesUrls = [];
 
     const { pagesItems } = this.props.settings.pages;
+    const { color, testerEngine, tags, selectorsToHide, selectorsToRemove } = this.props.settings;
+
+    const diffEngines = [
+      {
+        name: "Phantom Js",
+        code: "phantomjs",
+      },
+      {
+        name: "Slimer Js",
+        code: "slimerjs",
+      }
+    ];
 
     for (let i = 0; i < pagesItems.length; i++) {
       pagesUrls.push(<div key={pagesItems[i].id}>
@@ -103,6 +158,34 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
       </div>);
     }
 
+    let styles = {
+      color: {
+        width: '36px',
+        height: '14px',
+        borderRadius: '2px',
+        background: color,
+      },
+      swatch: {
+        padding: '5px',
+        background: '#fff',
+        borderRadius: '1px',
+        boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
+        display: 'inline-block',
+        cursor: 'pointer',
+      },
+      popover: {
+        position: 'absolute',
+        zIndex: '2',
+      },
+      cover: {
+        position: 'fixed',
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        left: '0px',
+      },
+    };
+
     return (
       <div>
         <h2>Add {this.state.type === "a_b" ? "a 2 website" : "Before/After"} comparison name</h2>
@@ -117,6 +200,37 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
             {pagesUrls}
             <div><a onClick={this.addNewPageUrlPair.bind(this)} class="btn btn-link btn-sm">+ Add new page pair</a></div>
           </div>
+        </div>
+        <div id="compare-site-other-data">
+          Selectors to hide:<br/>
+          {selectorsToHide.map((toHide, i) => {
+            return (<div key={"toHide" + i}>{i + 1}. <input type="text" value={toHide} onChange={this.changeHideValue.bind(this, i)}/></div>);
+          })}
+          {selectorsToHide.length + 1}. <input key={"toHide" + selectorsToHide.length} type="text" value="" onChange={this.changeHideValue.bind(this, selectorsToHide.length)}/><br/>
+          Selectors to remove<br/>
+          {selectorsToRemove.map((toRemove, i) => {
+            return (<div key={"toRemove" + i}>{i + 1}. <input type="text" value={toRemove} onChange={this.changeRemoveValue.bind(this, i)}/></div>);
+          })}
+          {selectorsToRemove.length + 1}. <input key={"toRemove" + selectorsToRemove.length} type="text" value="" onChange={this.changeRemoveValue.bind(this, selectorsToRemove.length)}/><br/>
+          Tester engine:
+          <select>
+            {diffEngines.map((engine) => {
+              return <option key={engine.code} value={engine.code} selected={testerEngine === engine.code}>{engine.name}</option>
+            })}
+          </select><br/>
+          Diff color:
+          <div style={ styles.swatch } onClick={ this.handleClick }>
+            <div style={ styles.color } />
+          </div>
+          { this.state.displayColorPicker ? <div style={ styles.popover }>
+            <div style={ styles.cover } onClick={ this.handleClose }/>
+            <SketchPicker disableAlpha color={color} onChange={ this.handleChange } />
+          </div> : null }
+          Tags:<br/>
+          {tags.map((tags, i) => {
+            return (<div key={"tags" + i}>{i + 1}. <input type="text" value={tags} onChange={this.changeTagsValue.bind(this, i)}/></div>);
+          })}
+          {tags.length + 1}. <input key={"tags" + tags.length} type="text" value="" onChange={this.changeTagsValue.bind(this, tags.length)}/><br/>
         </div>
         <div>
           <a onClick={this.runTest.bind(this)} class="btn btn-link btn-sm">Save & Run the test</a>

@@ -23,6 +23,11 @@ export default function reducer(state={
       },
     ],
   },
+  color: "#ff00ff",
+  testerEngine: "phantomjs",
+  tags: [],
+  selectorsToHide: [],
+  selectorsToRemove: [],
   result: null,
   resultIsTest: false,
   fetching: false,
@@ -59,6 +64,11 @@ export default function reducer(state={
             },
           ],
         },
+        color: "#ff00ff",
+        testerEngine: "phantomjs",
+        tags: [],
+        selectorsToHide: [],
+        selectorsToRemove: [],
         result: null,
         resultIsTest: false,
         fetching: false,
@@ -143,6 +153,86 @@ export default function reducer(state={
     case "CHANGE_FIELD_TITLE": {
       let newState = {...state};
       newState.title = action.payload;
+      return newState;
+    }
+    case "CHANGE_FIELD_COLOR": {
+      let newState = {...state};
+      newState.color = action.payload;
+      return newState;
+    }
+    case "DELETE_FIELD_HIDE": {
+      let newState = {...state};
+      newState.selectorsToHide = [
+        ...state.selectorsToHide.slice(0, action.payload),
+        ...state.selectorsToHide.slice(action.payload + 1)
+      ];
+      return newState;
+    }
+    case "CHANGE_FIELD_HIDE": {
+      let newState = {...state};
+      if (action.payload.i === state.selectorsToHide.length) {
+        newState.selectorsToHide = [
+          ...state.selectorsToHide,
+          action.payload.value
+        ];
+      }
+      else {
+        newState.selectorsToHide = [
+          ...state.selectorsToHide.slice(0, action.payload.i),
+          action.payload.value,
+          ...state.selectorsToHide.slice(action.payload.i + 1),
+        ];
+      }
+      return newState;
+    }
+    case "DELETE_FIELD_REMOVE": {
+      let newState = {...state};
+      newState.selectorsToRemove = [
+        ...state.selectorsToRemove.slice(0, action.payload),
+        ...state.selectorsToRemove.slice(action.payload + 1)
+      ];
+      return newState;
+    }
+    case "CHANGE_FIELD_REMOVE": {
+      let newState = {...state};
+      if (action.payload.i === state.selectorsToRemove.length) {
+        newState.selectorsToRemove = [
+          ...state.selectorsToRemove,
+          action.payload.value
+        ];
+      }
+      else {
+        newState.selectorsToRemove = [
+          ...state.selectorsToRemove.slice(0, action.payload.i),
+          action.payload.value,
+          ...state.selectorsToRemove.slice(action.payload.i + 1),
+        ];
+      }
+      return newState;
+    }
+    case "DELETE_FIELD_TAGS": {
+      let newState = {...state};
+      newState.tags = [
+        ...state.tags.slice(0, action.payload),
+        ...state.tags.slice(action.payload + 1)
+      ];
+      return newState;
+    }
+    case "CHANGE_FIELD_TAGS": {
+      let newState = {...state};
+      if (action.payload.i === state.tags.length) {
+        newState.tags = [
+          ...state.tags,
+          action.payload.value,
+        ];
+      }
+      else {
+        newState.tags = [
+          ...state.tags.slice(0, action.payload.i),
+          action.payload.value,
+          ...state.tags.slice(action.payload.i + 1),
+        ];
+      }
       return newState;
     }
     case "SAVE_TEST_PENDING": {

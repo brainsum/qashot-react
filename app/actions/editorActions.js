@@ -72,6 +72,64 @@ export function changeValueOfTitle(value) {
   }
 }
 
+export function changeValueOfColor(value) {
+  return {
+    type: "CHANGE_FIELD_COLOR",
+    payload: value,
+  }
+}
+
+export function deleteHideValue(i) {
+  return {
+    type: "DELETE_FIELD_HIDE",
+    payload: i,
+  }
+}
+
+export function changeOrAddHideValue(i, value) {
+  return {
+    type: "CHANGE_FIELD_HIDE",
+    payload: {
+      i: i,
+      value: value
+    },
+  }
+}
+
+export function deleteRemoveValue(i) {
+  return {
+    type: "DELETE_FIELD_REMOVE",
+    payload: i,
+  }
+}
+
+export function changeOrAddRemoveValue(i, value) {
+  return {
+    type: "CHANGE_FIELD_REMOVE",
+    payload: {
+      i: i,
+      value: value
+    },
+  }
+}
+
+export function deleteTagsValue(i) {
+  return {
+    type: "DELETE_FIELD_TAGS",
+    payload: i,
+  }
+}
+
+export function changeOrAddTagsValue(i, value) {
+  return {
+    type: "CHANGE_FIELD_TAGS",
+    payload: {
+      i: i,
+      value: value
+    },
+  }
+}
+
 export function saveTest(curState, type) {
   let scenarios = [], viewport = [];
 
@@ -99,6 +157,11 @@ export function saveTest(curState, type) {
       type: type,
       field_scenario: scenarios,
       field_viewport: viewport,
+      field_tag: curState.tags,
+      field_tester_engine: curState.testerEngine,
+      selectors_to_hide: curState.selectorsToHide,
+      selectors_to_remove: curState.selectorsToRemove,
+      field_diff_color: curState.color.replace('#', ''),
     }),
   }
 }
