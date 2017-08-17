@@ -15,7 +15,6 @@ export default function reducer(state={
   fetched: false,
   error: null,
   deleting: [],
-  running: [],
 }, action) {
 
   switch (action.type) {
@@ -212,15 +211,9 @@ export default function reducer(state={
       newState.deleting[action.payload] = true;
       return newState;
     }
-    case "RUN_TEST_ONLY_ID": {
-      let newState = {...state};
-      newState.running[action.payload] = true;
-      return newState;
-    }
 
 
     case "SAVE_TEST_FULFILLED": {
-      console.log(action.payload.data);
       let entity = action.payload.data;
       let paginationName = "pagination";
       let pagesName = "pages";

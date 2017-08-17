@@ -52,7 +52,6 @@ export function fetchTestsByPageAndLimit(page, limit, type) {
 
 export function runTest(id, stage) {
   return (dispatch) => {
-    dispatch({type: "RUN_TEST_ONLY_ID", payload: id});
     dispatch({
       type: "RUN_TEST_ONLY_LISTER",
       payload: axios().post('api/rest/v1/qa_shot_test/' + id + '/queue?_format=json', {
@@ -70,6 +69,28 @@ export function deleteTest(id, type) {
     dispatch({
       type: "DELETE_TEST_LISTER",
       payload: axios().delete('api/rest/v1/qa_shot_test/' + id + '?_format=json&type=' + type),
+    });
+  };
+}
+
+export function getEntityUpdate(entities) {
+  return (dispatch) => {
+    dispatch({
+      type: "GET_PERIODIC_ENTITY_UPDATE",
+      payload: axios().post('api/rest/v1/last_modification?_format=json', {
+          "entities": entities,
+        }),
+    });
+  };
+}
+
+export function getQueueUpdate(tids) {
+  return (dispatch) => {
+    dispatch({
+      type: "GET_PERIODIC_QUEUE_UPDATE",
+      payload: axios().post('api/rest/v1/queue_status?_format=json', {
+        "tids": tids,
+      }),
     });
   };
 }

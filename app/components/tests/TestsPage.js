@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Link } from 'react-router';
-import { fetchTests, fetchTestsByUrl, fetchTestsByPageAndLimit } from '../../actions/testsActions';
+import {
+  fetchTests, fetchTestsByUrl, fetchTestsByPageAndLimit,
+  getEntityUpdate, getQueueUpdate
+} from '../../actions/testsActions';
 import { deleteTest, runTest } from "../../actions/testsActions";
 
 @connect((store) => {
   return {
     isLoading: store.tests.fetching,
     deleting: store.tests.deleting,
-    running: store.tests.running,
     tests: store.entities.tests,
+    queue: store.entities.queue,
     metadata_lifetimes: store.entities.metadata_lifetimes,
     listAB: store.tests.pagesAB[store.tests.paginationAB.page],
     paginationAB: store.tests.paginationAB,
@@ -21,6 +24,37 @@ export default class TestsPage extends Component {
   componentDidMount() {
     this.props.dispatch(fetchTests('a_b'));
     this.props.dispatch(fetchTests('before_after'));
+
+    this.timer = setInterval(this.periodicTask.bind(this), 10000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  periodicTask() {
+    let curTids = [
+      ...this.props.listAB,
+      ...this.props.listBA,
+    ];
+
+    const { tests } = this.props;
+    let curTestEntitites = [];
+
+    curTids.map((item) => {
+      let curEntity = tests[item];
+      curTestEntitites.push({
+        tid: curEntity.id,
+        changed: curEntity.changed,
+      });
+    });
+
+    if (curTestEntitites.length > 0) {
+      this.props.dispatch(getEntityUpdate(curTestEntitites));
+    }
+    if (curTids.length > 0) {
+      this.props.dispatch(getQueueUpdate(curTids));
+    }
   }
 
   runTest(id, stage) {
@@ -89,7 +123,7 @@ export default class TestsPage extends Component {
   }
 
   renderABTests() {
-    const { tests, running, deleting, listAB, paginationAB, metadata_lifetimes } = this.props;
+    const { tests, deleting, listAB, paginationAB, metadata_lifetimes, queue } = this.props;
 
     if (!listAB) {
       return (
@@ -128,7 +162,7 @@ export default class TestsPage extends Component {
                 <td class="text-center">{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].passed_count : '-'}</td>
                 <td class="text-center">{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].failed_count : '-'}</td>
                 <td>
-                  {running[test.id] ? "Running..." :
+                  {queue[test.id] ? "Running..." :
                     <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, '')}>
                       {test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
                     </button>
@@ -150,7 +184,7 @@ export default class TestsPage extends Component {
   }
 
   renderBATests() {
-    const { tests, running, deleting, listBA, paginationBA, metadata_lifetimes } = this.props;
+    const { tests, deleting, listBA, paginationBA, metadata_lifetimes, queue } = this.props;
 
     if (!listBA) {
       return (
@@ -192,8 +226,8 @@ export default class TestsPage extends Component {
               </td>
               <td>
                 {!jQuery.isEmptyObject(lastReference) ? lastReference.datetime : '-'}
-                {running[test.id] ? "Running..." :
-                  <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, 'reference')}>
+                {queue[test.id] ? (queue[test.id].stage === "before" ? "Running..." : "After is in queue") :
+                  <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, 'before')}>
                     {!jQuery.isEmptyObject(lastReference) ? 'Recreate shots' : 'Create shots'}
                   </button>
                 }
@@ -201,7 +235,7 @@ export default class TestsPage extends Component {
               {!jQuery.isEmptyObject(lastReference) ? (
                 <td>
                   {!jQuery.isEmptyObject(lastTest) ? lastTest.datetime : '-'}
-                  {running[test.id] ? "Running..." :
+                  {queue[test.id] ? (queue[test.id].stage === "after" ? "Running..." : "Reference is in queue") :
                     <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, 'after')}>
                       {!jQuery.isEmptyObject(lastTest) ? 'Re-run the test' : 'Run the test'}
                     </button>

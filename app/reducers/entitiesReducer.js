@@ -1,9 +1,13 @@
 import { normalize } from 'normalizr';
-import { testSchema, testListerSchema, runRespondSchema } from '../schema/mainApiSchemas';
+import {
+  testSchema, testListerSchema, runRespondSchema,
+  updateTestEntity, queueEntity
+} from '../schema/mainApiSchemas';
 import merge from 'lodash/merge';
 
 export default function reducer(state={
   metadata_lifetimes: {},
+  queue: {},
   results: {},
   scenarios: {},
   tests: {},
@@ -24,11 +28,33 @@ export default function reducer(state={
     case "RUN_TEST_ONLY_FULFILLED":
     case "RUN_TEST_ONLY_LISTER_FULFILLED": {
       let norm = normalize(action.payload.data, runRespondSchema);
-      return merge({}, state, norm.entities);
+      let newState = merge({}, state, norm.entities);
+      let queue = {
+        ...newState.queue,
+        [action.payload.data.entity.id]: {
+          stage: action.payload.data.runner_settings.stage,
+        }
+      };
+      newState = {
+        ...newState,
+        queue: queue,
+      };
+      return newState;
     }
     case "SAVE_TEST_FULFILLED": {
       let norm = normalize(action.payload.data, testSchema);
       return merge({}, state, norm.entities);
+    }
+    case "GET_PERIODIC_ENTITY_UPDATE_FULFILLED": {
+      let norm = normalize(action.payload.data, updateTestEntity);
+      return merge({}, state, norm.entities);
+    }
+    case "GET_PERIODIC_QUEUE_UPDATE_FULFILLED": {
+      let norm = normalize(action.payload.data, queueEntity);
+      return {
+        ...state,
+        queue: typeof norm.entities.queue !== "undefined" ? norm.entities.queue : [],
+      };
     }
   }
 

@@ -40,7 +40,6 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
 
   componentDidMount() {
     this.props.dispatch(loadTestEditor());
-    console.log(this);
   }
 
   editViewports() {

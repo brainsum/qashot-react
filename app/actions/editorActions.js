@@ -175,7 +175,7 @@ export function saveAndRunTest(curState, type) {
         dispatch({
           type: "RUN_TEST",
           payload: axios().post('api/rest/v1/qa_shot_test/' + result.data.id[0].value + '/queue?_format=json', {
-            test_stage: type === "a_b" ? "" : "reference",
+            test_stage: type === "a_b" ? "" : "before",
             type: type,
             frontend_url: generateTestUrl(id),
           }),
