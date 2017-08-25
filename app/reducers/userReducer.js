@@ -1,7 +1,9 @@
 export default function reducer(state={
   user: {},
+  loginname: null,
+  password: null,
   csrfToken: "",
-  success: true,
+  success: false,
 }, action) {
 
   switch (action.type) {
