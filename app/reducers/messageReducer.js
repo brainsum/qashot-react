@@ -81,7 +81,7 @@ export default function reducer(state={
         errorMessage: [
           ...state.errorMessage,
           {
-            fullMessage: (typeof action.payload.response !== "undefined" && action.payload.response.message ? action.payload.response.message + "\n\r" : "") + action.payload.message + "\n\rStack: " + action.payload.stack,
+            fullMessage: (typeof action.payload.response !== "undefined" && action.payload.response.message ? action.payload.response.message + "\n" : "") + action.payload.message + "\nStack: " + action.payload.stack,
             message: action.payload.message,
             stack: action.payload.stack,
             spinner: false,
@@ -96,7 +96,7 @@ export default function reducer(state={
     let errorMessage = [
       ...state.errorMessage,
       {
-        fullMessage: (typeof action.payload.response !== "undefined" && typeof action.payload.response.data !== "undefined" && typeof action.payload.response.data.message !== "undefined" ? action.payload.response.data.message + "\n\r" : "") + action.payload.message + "\n\rStack: " + action.payload.stack,
+        fullMessage: (typeof action.payload.response !== "undefined" && typeof action.payload.response.data !== "undefined" && typeof action.payload.response.data.message !== "undefined" ? action.payload.response.data.message + "\n" : "") + action.payload.message + "\nStack: " + action.payload.stack,
         message: action.payload.message,
         stack: action.payload.stack,
         spinner: false,
