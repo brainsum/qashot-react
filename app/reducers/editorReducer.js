@@ -1,7 +1,7 @@
 export default function reducer(state={
   title: "",
   viewports: {
-    editOn: false,
+    editOn: true,
     nextId: 1,
     viewportsItems: [
       {
@@ -42,7 +42,7 @@ export default function reducer(state={
       return {...state,
         title: "",
         viewports: {
-          editOn: false,
+          editOn: true,
           nextId: 1,
           viewportsItems: [
             {

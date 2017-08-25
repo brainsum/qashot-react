@@ -13,7 +13,9 @@ export default () => {
     auth: {
       username: loginname,
       password: password
-    }
+    },
+    xsrfCookieName: "CSRF-Token",
+    xsrfHeaderName: "X-CSRF-Token",
   });
 
   // If there's a network or 5XX error, retry it 3 times.

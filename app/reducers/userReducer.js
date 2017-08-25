@@ -1,8 +1,7 @@
 export default function reducer(state={
   user: {},
-  loginname: null,
-  password: null,
-  error: null,
+  csrfToken: "",
+  success: true,
 }, action) {
 
   switch (action.type) {
@@ -10,13 +9,19 @@ export default function reducer(state={
       return {...state, error: null};
     }
     case "LOGIN_REJECTED": {
-      return {...state, error: action.payload};
+      return {...state, success: false};
     }
     case "LOGIN_FULFILLED": {
       return {
         ...state,
         user: action.payload.data,
-        error: false,
+        success: true,
+      };
+    }
+    case "GET_CSRF_TOKEN_FULFILLED": {
+      return {
+        ...state,
+        csrfToken: action.payload.data,
       };
     }
     case "SET_LOGIN_DATA": {

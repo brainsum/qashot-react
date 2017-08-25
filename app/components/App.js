@@ -4,15 +4,17 @@ import { HashRouter, Match, Link } from 'react-router';
 import { connect } from "react-redux";
 
 import TestsPage from './tests/TestsPage';
-import CreateTwoWebsiteComparsionPage from './two-website-comparsion/CreatePage';
+import CreateTwoWebsiteComparsionPage from './create/CreatePage';
 import TwoWebsiteComparsionPage from './two-website-comparsion/ItemPage';
 import {setUserLoginData, userLogin} from "../actions/userActions";
+import Messages from "./part/message";
+import BeforeAfterComparsionItemPage from "./before-after-comparsion/ItemPage";
 
 @connect((store) => {
   return {
     loginname: store.user.loginname,
     password: store.user.password,
-    error: store.user.error,
+    success: store.user.success,
   };
 })
 export default class App extends Component {
@@ -65,12 +67,12 @@ export default class App extends Component {
   }
 
   renderContent() {
-    const { loginname, password, error } = this.props;
+    const { loginname, password, success } = this.props;
 
-    if (loginname === null || password === null || error !== false) {
+    if (loginname === null || password === null || !success) {
       return (
         <div class="container__inner page__content bg-white">
-          {this.renderMessages()}
+          <Messages/>
           <form action="#" onSubmit={this.login.bind(this)}>
             Username: <input type="text" value={this.state.loginname} onChange={this.onUserChange.bind(this)} /><br/>
             Password: <input type="password" value={this.state.password} onChange={this.onPasswordChange.bind(this)} /><br/>
@@ -82,27 +84,13 @@ export default class App extends Component {
 
     return (
       <div class="container__inner page__content bg-white">
+        <Messages/>
         <Match exactly pattern="/" component={TestsPage} />
         <Match exactly pattern="/create/two-website-comparsion" component={CreateTwoWebsiteComparsionPage} />
         <Match exactly pattern="/create/before-after-comparsion" component={CreateTwoWebsiteComparsionPage} />
         <Match exactly pattern="/two-website-comparsion/:id" component={TwoWebsiteComparsionPage} />
+        <Match exactly pattern="/before-after-comparsion/:id" component={BeforeAfterComparsionItemPage} />
       </div>
     );
-  }
-
-  renderMessages() {
-    const {error} = this.props;
-
-    let errorMessage;
-    if (error) {
-      errorMessage = (
-        <div class="alert alert-danger alert-dismissable" key="error">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>ERROR!</strong> {error.message} : {error.response.data.message}
-        </div>
-      );
-    }
-
-    return errorMessage;
   }
 }

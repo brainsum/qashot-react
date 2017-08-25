@@ -18,12 +18,12 @@ export function fetchTest(id) {
   }
 }
 
-export function runTest(id) {
+export function runTest(id, type, stage) {
   return {
     type: "RUN_TEST_ONLY",
     payload: axios().post('api/rest/v1/qa_shot_test/' + id + '/queue?_format=json', {
-      test_stage: "",
-      type: "a_b",
+      test_stage: stage,
+      type: type,
       frontend_url: generateTestUrl(id),
     }),
   }
@@ -36,29 +36,25 @@ export function deleteTest(id) {
   };
 }
 
-export function addNewViewport() {
-  return {
-    type: "ADD_VIEWPORT_DETAILS_PAGE",
-    payload: null
+export function patchTest(id, entityPart) {
+  return (dispatch, getState) => {
+    dispatch({
+      type: "GET_CSRF_TOKEN",
+      payload: axios().get('session/token?_format=json', {
+        auth: false,
+      }),
+    }).then(() => {
+      let curState = getState();
+      dispatch({
+        type: "PATCH_TEST",
+        payload: axios().patch('api/rest/v1/qa_shot_test/' + id + '?_format=json', entityPart, {
+          headers: {
+            "X-CSRF-Token": curState.user.csrfToken.trim(),
+          },
+        }),
+      });
+    });
   };
-}
-
-export function deleteViewport(index) {
-  return {
-    type: "DELETE_VIEWPORT_DETAILS_PAGE",
-    payload: index,
-  }
-}
-
-export function changeValueOfViewport(value, index, field) {
-  return {
-    type: "CHANGE_FIELD_VALUE_VIEWPORT_DETAILS_PAGE",
-    payload: {
-      value: value,
-      index: index,
-      field: field,
-    },
-  }
 }
 
 export function addNewPageUrlPair() {

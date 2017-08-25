@@ -22,7 +22,7 @@ import {getEntityUpdate, getQueueUpdate} from "../../actions/testsActions";
     testIsRunning: store.test.testIsRunning,
   };
 })
-export default class TwoWebsiteComparsionItemPage extends Component {
+export default class BeforeAfterComparsionItemPage extends Component {
   results = null;
 
   constructor(props) {
@@ -259,8 +259,8 @@ export default class TwoWebsiteComparsionItemPage extends Component {
 
   /********** RUN TEST **********/
 
-  runTest() {
-    this.props.dispatch(runTest(this.props.data.id, this.props.data.type, ''));
+  runTest(stage) {
+    this.props.dispatch(runTest(this.props.data.id, this.props.data.type, stage));
   }
 
   render() {
@@ -273,7 +273,8 @@ export default class TwoWebsiteComparsionItemPage extends Component {
       return (<div>
         <div class="test-head">
           <span>Comparison's name</span>
-          <h1 class="comparation">{data.name}</h1>
+          <h1 class="comparation ba">{data.name}</h1>
+          {this.renderViewports()}
           {this.renderTestHeader()}
           <div class="test-links">
             <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
@@ -312,25 +313,32 @@ export default class TwoWebsiteComparsionItemPage extends Component {
   renderTestHeader() {
     const {data, metadata_lifetimes} = this.props;
 
-    let isData = data.metadata_last_run.length > 0;
-    let lastRun = data.metadata_last_run[0];
+    let isDataBefore = data.metadata_last_run.length > 0;
+    let isDataAfter = data.metadata_last_run.length > 1;
+    let lastRunBefore = data.metadata_last_run[0];
+    let lastRunAfter = data.metadata_last_run[1];
 
     return (<div class="test-info-header">
       <div class="result">
-        <div class="success">Passed <span class="passed-number">{isData ? metadata_lifetimes[lastRun].passed_count : "?"}</span></div>
-        <div class="failed">Failed <span class="failed-number">{isData ? metadata_lifetimes[lastRun].failed_count : "?"}</span></div>
+        <div class="success">Passed <span class="passed-number">{isDataAfter ? metadata_lifetimes[lastRunAfter].passed_count : "?"}</span></div>
+        <div class="failed">Failed <span class="failed-number">{isDataAfter ? metadata_lifetimes[lastRunAfter].failed_count : "?"}</span></div>
       </div>
-      <div class="middle-data">
-        <div class="compared-time">Compared at: {isData ? <strong>{metadata_lifetimes[lastRun].datetime}</strong> : "Not compared yet"}</div>
-        <div class="test-runtime">(Test run time: {isData? metadata_lifetimes[lastRun].duration : "Not runned yet"})</div>
-        <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this)}>
-          {data.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
+      <div class="data-reference">
+        <h2>"Before" shots (reference)</h2>
+        <div class="compared-time">Created at: {isDataBefore ? <strong>{metadata_lifetimes[lastRunBefore].datetime}</strong> : "Not created yet"}</div>
+        <div class="test-runtime">(Test run time: {isDataBefore? metadata_lifetimes[lastRunBefore].duration : "Not runned yet"})</div>
+        <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this, 'before')}>
+          {isDataBefore ? 'Re-create' : 'Create'}
         </button>
-        <a>
-          Set automated runs
-        </a>
       </div>
-      {this.renderViewports()}
+      <div class="data-after">
+        <h2>"After" shots</h2>
+        <div class="compared-time">Created at: {isDataAfter ? <strong>{metadata_lifetimes[lastRunAfter].datetime}</strong> : "Not created yet"}</div>
+        <div class="test-runtime">(Test run time: {isDataAfter ? metadata_lifetimes[lastRunAfter].duration : "Not runned yet"})</div>
+        <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this, 'after')}>
+          {isDataAfter ? 'Re-run the test' : 'Run the test'}
+        </button>
+      </div>
       <div class="clearfix" />
     </div>);
   }
@@ -398,13 +406,8 @@ export default class TwoWebsiteComparsionItemPage extends Component {
                 <div class="scenario-info">
                   <h2><input type="text" placeholder="Scenario name" value={editData.field_label} onChange={this.changeValueOfPageUrlPair.bind(this, scenarioId, "field_label")}/> (<a onClick={this.cancelEditScenario.bind(this, scenarioId)}>cancel</a> <a onClick={this.saveScenario.bind(this, scenarioId)}>save</a> <a onClick={this.deleteScenario.bind(this, scenarioId)}>delete</a>)</h2>
                   <div class="urls row">
-                    <div class="url1 col-lg-5">
-                      <div class="url1-title">URL1</div>
-                      <div class="url1-input"><input type="text" placeholder="Reference URL" value={editData.field_reference_url} onChange={this.changeValueOfPageUrlPair.bind(this, scenarioId, "field_reference_url")}/></div>
-                    </div>
-                    <div class="url-vs-text col-lg-auto"> VS </div>
                     <div class="url2 col-lg-5">
-                      <div class="url2-title">URL2</div>
+                      <div class="url2-title">URL</div>
                       <div class="url2-input"><input type="text" placeholder="Test URL" value={editData.field_test_url} onChange={this.changeValueOfPageUrlPair.bind(this, scenarioId, "field_test_url")}/></div>
                     </div>
                   </div>
@@ -418,8 +421,7 @@ export default class TwoWebsiteComparsionItemPage extends Component {
               <div class="scenario-info">
                 <h2>{scenario.field_label} (<a onClick={this.editScenario.bind(this, scenarioId)}>edit</a>)</h2>
                 <div class="row">
-                  <div class="col-lg-4">{scenario.field_reference_url}</div>
-                  <div class="col-lg-4">{scenario.field_test_url}</div>
+                  <div class="col-lg-8">{scenario.field_test_url}</div>
                   <div class="col-lg-4">Difference</div>
                 </div>
               </div>

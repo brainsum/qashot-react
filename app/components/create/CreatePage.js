@@ -13,6 +13,7 @@ import {
   changeOrAddHideValue, deleteRemoveValue, changeOrAddRemoveValue,
   deleteTagsValue, changeOrAddTagsValue
 } from "../../actions/editorActions";
+import Messages from "../part/message";
 
 @connect((store) => {
   return {
@@ -125,7 +126,7 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
     let pagesUrls = [];
 
     const { pagesItems } = this.props.settings.pages;
-    const { color, testerEngine, tags, selectorsToHide, selectorsToRemove } = this.props.settings;
+    const { color, testerEngine, tags, selectorsToHide, selectorsToRemove, error } = this.props.settings;
 
     const diffEngines = [
       {
@@ -143,16 +144,16 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
         <div class="compare-url-title">{i + 1}. <input type="text" placeholder="Scenario name" value={pagesItems[i].name} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_NAME")}/></div>
         <div class="right-buttons"><a onClick={this.deletePageUrlPair.bind(this, i)}>Delete</a></div>
         <div class="urls row">
-          <div class="url1 col-lg-5">
-            <div class="url1-title">{this.state.type === "a_b" ? "URL1" : "URL"}</div>
-            <div class="url1-input"><input type="text" placeholder="Reference URL" value={pagesItems[i].source} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_SOURCE")}/></div>
-          </div>
-          {this.state.type === "a_b" ? <div class="url-vs-text col-lg-auto"> VS </div> :""}
           {this.state.type === "a_b" ? (
-            <div class="url2 col-lg-5">
-            <div class="url2-title">URL2</div>
-            <div class="url2-input"><input type="text" placeholder="Test URL" value={pagesItems[i].destination} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_DESTINATION")}/></div>
+          <div class="url1 col-lg-5">
+            <div class="url1-title">URL1</div>
+            <div class="url1-input"><input type="text" placeholder="Reference URL" value={pagesItems[i].source} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_SOURCE")}/></div>
           </div>) : ""}
+          {this.state.type === "a_b" ? <div class="url-vs-text col-lg-auto"> VS </div> :""}
+            <div class="url2 col-lg-5">
+            <div class="url2-title">{this.state.type === "a_b" ? "URL2" : "URL"}</div>
+            <div class="url2-input"><input type="text" placeholder="Test URL" value={pagesItems[i].destination} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_DESTINATION")}/></div>
+          </div>
         </div>
       </div>);
     }
@@ -236,7 +237,7 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
           <a onClick={this.save.bind(this)} class="btn btn-link btn-sm">Save</a>
           <Link to="/" class="btn btn-link btn-sm">Cancel</Link>
         </div>
-        {this.messages()}
+        <Messages notGlobal errorMessage={error} /*successMessage={sMessage} infoMessage={message}*/ />
       </div>
     );
   }
@@ -267,45 +268,5 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
       <div class="viewports-container">
         <div>Viewports (<button onClick={this.editViewports.bind(this)}>Edit</button>)</div>
       </div>);
-  }
-
-  messages() {
-    const { error, fetching, result, state } = this.props.settings;
-
-    let errorMessage;
-    if (error) {
-      errorMessage = (
-        <div class="alert alert-danger alert-dismissable" key="error">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>ERROR!</strong> {error.message} : {error.response.data.message} <br />
-          {error.stack !== null && error.stack !== "" ? (<strong>Stack: </strong>) : ""}
-          {error.stack !== null && error.stack !== "" ? (error.stack.split('\n').map((item, key) => {
-            return <span key={key}>{item}<br/></span>
-          })) : ""}
-        </div>
-      );
-    }
-
-    let infoMessage;
-    if (fetching) {
-      infoMessage = (
-        <div class="alert alert-info alert-dismissable" key="info">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <span class="loading-spinner"/> Request sent, waiting for server response. ({state})
-        </div>
-      );
-    }
-
-    let successMessage;
-    if (!fetching && !error && result) {
-      successMessage = (
-        <div class="alert alert-success alert-dismissable" key="success">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          Successfully saved!
-        </div>
-      );
-    }
-
-    return [infoMessage, errorMessage, successMessage];
   }
 }

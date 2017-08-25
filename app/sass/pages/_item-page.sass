@@ -55,6 +55,12 @@
     a
       margin-left: .5em
 
+  .data-reference,
+  .data-after
+    float: left
+    max-width: 500px
+    padding-left: 2em
+
   .view-ports
     display: table-cell
     vertical-align: middle
@@ -84,13 +90,18 @@
       font-weight: bold
 
 
-.comparation:before
-  background-size: 28px 28px
-  background: url("/img/compare.svg") center center
-  content: ""
-  height: 28px
-  width: 28px
-  display: inline-block
-  border-radius: 50%
-  border: 3px solid black
-  margin-right: 10px
+.comparation
+  &:before
+    background-size: 28px 28px
+    background: url("/img/compare.svg") center center
+    content: ""
+    height: 28px
+    width: 28px
+    display: inline-block
+    border-radius: 50%
+    border: 3px solid black
+    margin-right: 10px
+
+  &.ba:before
+    background: url("/img/before-after.svg") center center
+    border: none

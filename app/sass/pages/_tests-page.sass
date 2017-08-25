@@ -1,8 +1,38 @@
 
+.tests-page
+  h2, .h2
+    margin-bottom: 1em
+
 .container
   &__inner
     padding-left: 2rem
     padding-right: 2rem
+
+    .two-website-compare h2:before
+      background-size: 28px 28px
+      background: url("/img/compare.svg") center center
+      content: ""
+      height: 28px
+      width: 28px
+      display: inline-block
+      border-radius: 50%
+      border: 3px solid black
+      margin-right: 10px
+
+    .before-after-compare
+      margin-top: 100px
+
+      h2:before
+        background-size: 28px 28px
+        background: url("/img/before-after.svg") center center
+        content: ""
+        height: 28px
+        width: 28px
+        display: inline-block
+        margin-right: 10px
+
+      table button
+        margin: auto 10px
 
 .page
   &__header

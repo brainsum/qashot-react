@@ -53,7 +53,9 @@ export default class TestsPage extends Component {
       this.props.dispatch(getEntityUpdate(curTestEntitites));
     }
     if (curTids.length > 0) {
-      this.props.dispatch(getQueueUpdate(curTids));
+      setTimeout(function () {
+        this.props.dispatch(getQueueUpdate(curTids));
+      }.bind(this), 100);
     }
   }
 
@@ -69,8 +71,8 @@ export default class TestsPage extends Component {
     const { paginationAB, paginationBA } = this.props;
 
     return (
-      <div>
-        <div>
+      <div class="tests-page">
+        <div class="two-website-compare">
           <h2>
             <strong>2 website</strong> comparsions (eg. Development VS Live)
           </h2>
@@ -94,7 +96,7 @@ export default class TestsPage extends Component {
             + Add new session
           </Link>
         </div>
-        <div>
+        <div class="before-after-compare">
           <h2>
             <strong>BEFORE and AFTER</strong> comparison of 1 website
           </h2>
@@ -220,7 +222,7 @@ export default class TestsPage extends Component {
             <tr key={test.id}>
               <td>{(paginationBA.page - 1) * 10 + index + 1}</td>
               <td>
-                <Link to={`/two-website-comparsion/${test.id}`}>
+                <Link to={`/before-after-comparsion/${test.id}`}>
                   {test.name}
                 </Link>
               </td>
