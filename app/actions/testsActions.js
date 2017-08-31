@@ -50,19 +50,6 @@ export function fetchTestsByPageAndLimit(page, limit, type) {
   }
 }
 
-export function runTest(id, stage) {
-  return (dispatch) => {
-    dispatch({
-      type: "RUN_TEST_ONLY_LISTER",
-      payload: axios().post('api/rest/v1/qa_shot_test/' + id + '/queue?_format=json', {
-        stage: stage,
-        type: "a_b",
-        frontend_url: generateTestUrl(id),
-      }),
-    });
-  };
-}
-
 export function deleteTest(id, type) {
   return (dispatch) => {
     dispatch({type: "DELETE_TEST_ID", payload: id});

@@ -1,7 +1,7 @@
 export default function reducer(state={
   user: {},
-  loginname: null,
-  password: null,
+  loginname: "",
+  password: "",
   csrfToken: "",
   success: false,
 }, action) {

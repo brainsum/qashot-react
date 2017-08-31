@@ -13,6 +13,7 @@
     font-size: 32px
     display: table-cell
     vertical-align: middle
+    min-width: 210px
 
     div
       margin-bottom: .3em
@@ -57,9 +58,9 @@
 
   .data-reference,
   .data-after
-    float: left
     max-width: 500px
     padding-left: 2em
+    margin-bottom: 2em
 
   .view-ports
     display: table-cell
@@ -68,6 +69,9 @@
     padding-left: 3em
     border-left: 1px dashed black
     min-height: 114px
+
+    &.edit
+      min-width: 460px
 
     .viewports-list
       font-weight: bold
@@ -91,6 +95,12 @@
 
 
 .comparation
+  width: calc(100% - 25px)
+
+  .test-settings
+    cursor: pointer
+    float: right
+
   &:before
     background-size: 28px 28px
     background: url("/img/compare.svg") center center

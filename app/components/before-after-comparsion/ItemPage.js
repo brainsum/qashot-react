@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
+import { diffEngines } from '../../utils/helper';
 
 import {
   fetchTest, patchTest, runTest
 } from '../../actions/testActions';
 import Messages from "../part/message";
 import {getEntityUpdate, getQueueUpdate} from "../../actions/testsActions";
+import {getReadableRunName} from "../../utils/helper";
+import {SketchPicker} from "react-color";
 
 @connect((store, props) => {
   return {
@@ -20,6 +23,7 @@ import {getEntityUpdate, getQueueUpdate} from "../../actions/testsActions";
     sMessage: store.test.successMessage,
     error: store.test.error,
     testIsRunning: store.test.testIsRunning,
+    queue: store.entities.queue,
   };
 })
 export default class BeforeAfterComparsionItemPage extends Component {
@@ -31,6 +35,17 @@ export default class BeforeAfterComparsionItemPage extends Component {
     this.state = {
       displayMode: "exp-fail",
       viewportsEditable: false,
+      editSettings: false,
+      displayColorPicker: false,
+      settingsData: {
+        name: "",
+        selectorsToHide: [],
+        selectorsToRemove: [],
+        testerEngine: "",
+        color: "",
+        tags: [],
+      },
+      lastUpdatedArrayElement: "",
       newScenario: false,
       newScenarioData: {
         field_label: "",
@@ -47,6 +62,9 @@ export default class BeforeAfterComparsionItemPage extends Component {
     const { id } = this.props.params;
 
     this.props.dispatch(fetchTest(id));
+    setTimeout(function () {
+      this.props.dispatch(getQueueUpdate([id]));
+    }.bind(this), 100);
 
     this.timer = setInterval(this.periodicTask.bind(this), 10000);
   }
@@ -119,6 +137,10 @@ export default class BeforeAfterComparsionItemPage extends Component {
       type: this.props.data.type,
       field_viewport: this.state.editViewport,
     }));
+    this.cancelViewports();
+  }
+
+  cancelViewports() {
     this.setState({viewportsEditable: false});
   }
 
@@ -263,6 +285,129 @@ export default class BeforeAfterComparsionItemPage extends Component {
     this.props.dispatch(runTest(this.props.data.id, this.props.data.type, stage));
   }
 
+  saveSettings() {
+    let tags = [];
+    this.state.settingsData.tags.map((tag) => tags.push({name: tag}));
+
+    this.props.dispatch(patchTest(this.props.data.id, {
+      type: this.props.data.type,
+      name: this.state.settingsData.name,
+      selectors_to_hide: this.state.settingsData.selectorsToHide,
+      selectors_to_remove: this.state.settingsData.selectorsToRemove,
+      field_tester_engine: this.state.settingsData.testerEngine,
+      field_diff_color: this.state.settingsData.color.replace('#', ''),
+      field_tag: tags,
+    }));
+    this.cancelSettings();
+  }
+
+  editSettings() {
+    const { data } = this.props;
+    let tags = [];
+    data.field_tag.map((tag) => tags.push(tag.name));
+
+    this.setState({
+      editSettings: true,
+      settingsData: {
+        name: data.name,
+        selectorsToHide: data.selectors_to_hide,
+        selectorsToRemove: data.selectors_to_remove,
+        testerEngine: data.field_tester_engine,
+        color: '#' + data.field_diff_color,
+        tags: tags,
+      }
+    });
+  }
+
+  cancelSettings() {
+    this.setState({
+      editSettings: false,
+    });
+  }
+
+  changeName(e) {
+    this.setState({
+      settingsData: {
+        ...this.state.settingsData,
+        name: e.target.value,
+      }
+    });
+  }
+
+  changeEngine(e) {
+    this.setState({
+      settingsData: {
+        ...this.state.settingsData,
+        testerEngine: e.target.value,
+      }
+    });
+  }
+
+  handleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker })
+  };
+
+  handleClose = () => {
+    this.setState({ displayColorPicker: false })
+  };
+
+  handleChange = (color) => {
+    this.setState({
+      settingsData: {
+        ...this.state.settingsData,
+        color: color.hex,
+      }
+    });
+  };
+
+  changeArrayValue(i, propName, e) {
+    if (e.target.value === "" || e.target.value === null) {
+      this.setState({
+        settingsData: {
+          ...this.state.settingsData,
+          [propName]: [
+            ...state[propName].slice(0, i),
+            ...state[propName].slice(i + 1)
+          ]
+        },
+      });
+    }
+    else {
+      let newSettingsData = {...this.state.settingsData};
+      if (i === this.state.settingsData[propName].length) {
+        newSettingsData[propName] = [
+          ...this.state.settingsData[propName],
+          e.target.value,
+        ];
+        this.lastChanged = propName + "-" + i;
+      }
+      else {
+        newSettingsData[propName] = [
+          ...this.state.settingsData[propName].slice(0, i),
+          e.target.value,
+          ...this.state.settingsData[propName].slice(i + 1),
+        ];
+      }
+      this.setState({
+        settingsData: newSettingsData,
+      });
+    }
+  }
+
+  componentDidUpdate() {
+    if (typeof this.lastChanged !== "undefined" && typeof this.refs[this.lastChanged] !== "undefined" && typeof this.refs[this.lastChanged].focus === "function") {
+      let element = this.refs[this.lastChanged];
+      let contentLength = element.value.length;
+
+      element.focus();
+      if (element.setSelectionRange) {
+        element.setSelectionRange(contentLength, contentLength);
+      }
+
+      delete this.lastChanged;
+    }
+  }
+
   render() {
     const { isLoading, testIsRunning, data } = this.props;
     const {error, message, sMessage} = this.props;
@@ -273,8 +418,7 @@ export default class BeforeAfterComparsionItemPage extends Component {
       return (<div>
         <div class="test-head">
           <span>Comparison's name</span>
-          <h1 class="comparation ba">{data.name}</h1>
-          {this.renderViewports()}
+          {this.renderTestTitleAndSettings()}
           {this.renderTestHeader()}
           <div class="test-links">
             <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
@@ -310,8 +454,85 @@ export default class BeforeAfterComparsionItemPage extends Component {
     }
   }
 
+  renderTestTitleAndSettings() {
+    const { data } = this.props;
+
+    if (this.state.editSettings) {
+      const { name, selectorsToHide, selectorsToRemove, testerEngine, color, tags } = this.state.settingsData;
+      return (
+        <div>
+          <h1 class="comparation ba">
+            <input value={name} onChange={this.changeName.bind(this)}/>
+          </h1>
+          <div id="compare-site-other-data">
+          Selectors to hide:<br/>
+          {selectorsToHide.map((toHide, i) => {
+            return (<div key={"toHide" + i}>{i + 1}. <input ref={"selectorsToHide-" + i} type="text" value={toHide} onChange={this.changeArrayValue.bind(this, i, 'selectorsToHide')}/></div>);
+          })}
+          {selectorsToHide.length + 1}. <input key={"toHide" + selectorsToHide.length} type="text" value="" onChange={this.changeArrayValue.bind(this, selectorsToHide.length, 'selectorsToHide')}/><br/>
+          Selectors to remove<br/>
+          {selectorsToRemove.map((toRemove, i) => {
+            return (<div key={"toRemove" + i}>{i + 1}. <input ref={"selectorsToRemove-" + i} type="text" value={toRemove} onChange={this.changeArrayValue.bind(this, i, 'selectorsToRemove')}/></div>);
+          })}
+          {selectorsToRemove.length + 1}. <input key={"toRemove" + selectorsToRemove.length} type="text" value="" onChange={this.changeArrayValue.bind(this, selectorsToRemove.length, 'selectorsToRemove')}/><br/>
+          Tester engine:
+          <select value={testerEngine} onChange={this.changeEngine.bind(this)}>
+            {diffEngines.map((engine) => {
+              return <option key={engine.code} value={engine.code}>{engine.name}</option>
+            })}
+          </select><br/>
+          Diff color:
+            <div class="color-picker-swatch" onClick={ this.handleClick }>
+              <div class="color-picker-color" style={ {background: color} } />
+            </div>
+            { this.state.displayColorPicker ? <div class="color-picker-popover">
+              <div class="color-picker-cover" onClick={ this.handleClose }/>
+              <SketchPicker disableAlpha color={color} onChange={ this.handleChange } />
+            </div> : null }<br/>
+          Tags:<br/>
+          {tags.map((tags, i) => {
+            return (<div key={"tags" + i}>{i + 1}. <input ref={"tags-" + i} type="text" value={tags} onChange={this.changeArrayValue.bind(this, i, 'tags')}/></div>);
+          })}
+          {tags.length + 1}. <input key={"tags" + tags.length} type="text" value="" onChange={this.changeArrayValue.bind(this, tags.length, 'tags')}/><br/>
+          </div>
+          <div class="settings-actions">
+            <a onClick={this.cancelSettings.bind(this)}>Cancel</a> <a onClick={this.saveSettings.bind(this)}>Save</a>
+          </div>
+        </div>
+      );
+    }
+
+    let engineName = "";
+    for (let i = 0; i < diffEngines.length; i++) {
+      if (data.field_tester_engine === diffEngines[i].code) {
+        engineName = diffEngines[i].name;
+        break;
+      }
+    }
+    let tags = "";
+    data.field_tag.map((tag, i) => {
+      tags += i === 0 ? tag.name : "; " + tag.name;
+    });
+
+    return (
+      <div>
+        <h1 class="comparation ba">
+          {data.name}
+          <img class="test-settings" src="/img/gears.png" width="25" height="25" alt="Edit settings" title="Edit settings" onClick={this.editSettings.bind(this)}/>
+        </h1>
+        <div id="compare-site-other-data">
+          Selectors to hide: {data.selectors_to_hide.join("; ") || "-"}<br/>
+          Selectors to remove: {data.selectors_to_remove.join("; ") || "-"}<br/>
+          Tester engine: {engineName || data.field_tester_engine}<br/>
+          Diff color: <span class="color-picker-color" style={ {background: '#' + data.field_diff_color} } /><br/>
+          Tags: {tags || "-"}<br/>
+        </div>
+      </div>
+    );
+  }
+
   renderTestHeader() {
-    const {data, metadata_lifetimes} = this.props;
+    const {data, metadata_lifetimes, queue} = this.props;
 
     let isDataBefore = data.metadata_last_run.length > 0;
     let isDataAfter = data.metadata_last_run.length > 1;
@@ -323,22 +544,29 @@ export default class BeforeAfterComparsionItemPage extends Component {
         <div class="success">Passed <span class="passed-number">{isDataAfter ? metadata_lifetimes[lastRunAfter].passed_count : "?"}</span></div>
         <div class="failed">Failed <span class="failed-number">{isDataAfter ? metadata_lifetimes[lastRunAfter].failed_count : "?"}</span></div>
       </div>
-      <div class="data-reference">
-        <h2>"Before" shots (reference)</h2>
-        <div class="compared-time">Created at: {isDataBefore ? <strong>{metadata_lifetimes[lastRunBefore].datetime}</strong> : "Not created yet"}</div>
-        <div class="test-runtime">(Test run time: {isDataBefore? metadata_lifetimes[lastRunBefore].duration : "Not runned yet"})</div>
-        <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this, 'before')}>
-          {isDataBefore ? 'Re-create' : 'Create'}
-        </button>
+      <div class="middle-data">
+        <div class="data-reference">
+          <h2>"Before" shots (reference)</h2>
+          <div class="compared-time">Created at: {isDataBefore ? <strong>{metadata_lifetimes[lastRunBefore].datetime}</strong> : "Not created yet"}</div>
+          <div class="test-runtime">(Test run time: {isDataBefore? metadata_lifetimes[lastRunBefore].duration : "Not runned yet"})</div>
+          {queue[data.id] ? (queue[data.id].stage === "before" ? getReadableRunName(queue[data.id].status) : "After is in queue") :
+            <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this, 'before')}>
+              {isDataBefore ? 'Re-create' : 'Create'}
+            </button>
+          }
+        </div>
+        <div class="data-after">
+          <h2>"After" shots</h2>
+          <div class="compared-time">Created at: {isDataAfter ? <strong>{metadata_lifetimes[lastRunAfter].datetime}</strong> : "Not created yet"}</div>
+          <div class="test-runtime">(Test run time: {isDataAfter ? metadata_lifetimes[lastRunAfter].duration : "Not runned yet"})</div>
+          {queue[data.id] ? (queue[data.id].stage === "after" ? getReadableRunName(queue[data.id].status) : "Reference is in queue") :
+            <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this, 'after')}>
+              {isDataAfter ? 'Re-run the test' : 'Run the test'}
+            </button>
+          }
+        </div>
       </div>
-      <div class="data-after">
-        <h2>"After" shots</h2>
-        <div class="compared-time">Created at: {isDataAfter ? <strong>{metadata_lifetimes[lastRunAfter].datetime}</strong> : "Not created yet"}</div>
-        <div class="test-runtime">(Test run time: {isDataAfter ? metadata_lifetimes[lastRunAfter].duration : "Not runned yet"})</div>
-        <button class="btn btn-primary btn-lg" onClick={this.runTest.bind(this, 'after')}>
-          {isDataAfter ? 'Re-run the test' : 'Run the test'}
-        </button>
-      </div>
+      {this.renderViewports()}
       <div class="clearfix" />
     </div>);
   }
@@ -350,18 +578,18 @@ export default class BeforeAfterComparsionItemPage extends Component {
       let viewportsItems = [];
       for (let i = 0; i < this.state.editViewport.length; i++) {
         viewportsItems.push(<div key={i}>
-          {i + 1}. <input type="text" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={this.state.editViewport[i].field_width} />*
-          <input type="text" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={this.state.editViewport[i].field_height} />
-          &nbsp;(<input type="text" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={this.state.editViewport[i].field_name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
+          {i + 1}. <input type="text" class="viewport-width" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={this.state.editViewport[i].field_width} />*
+          <input type="text" class="viewport-height" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={this.state.editViewport[i].field_height} />
+          &nbsp;(<input type="text" class="viewport-name" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={this.state.editViewport[i].field_name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
         </div>);
       }
 
       return (
-        <div class="view-ports">
+        <div class="view-ports edit">
           <div>Viewports</div>
           <div class="viewports-edit">
             {viewportsItems}
-            <div class="buttons"><a onClick={this.editAddNewViewports.bind(this)} class="btn btn-link btn-sm">+ Add new viewport</a> <a onClick={this.saveViewports.bind(this)} class="btn btn-link btn-sm">Save</a></div>
+            <div class="buttons"><a onClick={this.editAddNewViewports.bind(this)} class="btn btn-link btn-sm">+ Add new viewport</a> <a onClick={this.saveViewports.bind(this)} class="btn btn-link btn-sm">Save</a> <a onClick={this.cancelViewports.bind(this)} class="btn btn-link btn-sm">Cancel</a></div>
           </div>
         </div>
       );

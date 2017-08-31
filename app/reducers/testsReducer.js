@@ -146,19 +146,6 @@ export default function reducer(state={
 
       return {...state, [paginationName]: pagination}
     }
-    case "RUN_TEST_ONLY_LISTER_PENDING": {
-      return {...state, fetching: true};
-    }
-    case "RUN_TEST_ONLY_LISTER_REJECTED": {
-      return {...state, fetching: false, error: action.payload};
-    }
-    case "RUN_TEST_ONLY_LISTER_FULFILLED": {
-      return {
-        ...state,
-        fetching: false,
-        fetched: true,
-      };
-    }
     case "DELETE_TEST_LISTER_PENDING": {
       return {...state, fetching: true};
     }

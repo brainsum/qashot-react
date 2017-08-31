@@ -28,14 +28,14 @@ export default function reducer(state={
       let norm = normalize(action.payload.data, testListerSchema);
       return merge({}, state, norm.entities);
     }
-    case "RUN_TEST_ONLY_FULFILLED":
-    case "RUN_TEST_ONLY_LISTER_FULFILLED": {
+    case "RUN_TEST_ONLY_FULFILLED": {
       let norm = normalize(action.payload.data, runRespondSchema);
       let newState = merge({}, state, norm.entities);
       let queue = {
         ...newState.queue,
         [action.payload.data.entity.id]: {
           stage: action.payload.data.runner_settings.stage,
+          status: "waiting",
         }
       };
       newState = {

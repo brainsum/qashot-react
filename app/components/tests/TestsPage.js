@@ -5,7 +5,9 @@ import {
   fetchTests, fetchTestsByUrl, fetchTestsByPageAndLimit,
   getEntityUpdate, getQueueUpdate
 } from '../../actions/testsActions';
-import { deleteTest, runTest } from "../../actions/testsActions";
+import { deleteTest } from "../../actions/testsActions";
+import {getReadableRunName} from "../../utils/helper";
+import {runTest} from "../../actions/testActions";
 
 @connect((store) => {
   return {
@@ -59,8 +61,8 @@ export default class TestsPage extends Component {
     }
   }
 
-  runTest(id, stage) {
-    this.props.dispatch(runTest(id, stage))
+  runTest(id, type, stage) {
+    this.props.dispatch(runTest(id, type, stage))
   }
 
   deleteTest(id, type) {
@@ -91,10 +93,10 @@ export default class TestsPage extends Component {
             </thead>
             {this.renderABTests()}
           </table>
-          {this.renderPagination(paginationAB, "a_b")}
-          <Link to="/create/two-website-comparsion" class="btn btn-link btn-sm">
+          <Link to="/create/two-website-comparsion" class="btn btn-link btn-sm add-new-cases">
             + Add new session
           </Link>
+          {this.renderPagination(paginationAB, "a_b")}
         </div>
         <div class="before-after-compare">
           <h2>
@@ -115,10 +117,10 @@ export default class TestsPage extends Component {
             </thead>
             {this.renderBATests()}
           </table>
-          {this.renderPagination(paginationBA, "before_after")}
-          <Link to="/create/before-after-comparsion" class="btn btn-link btn-sm">
+          <Link to="/create/before-after-comparsion" class="btn btn-link btn-sm add-new-cases">
             + Add new session
           </Link>
+          {this.renderPagination(paginationBA, "before_after")}
         </div>
       </div>
     );
@@ -148,10 +150,12 @@ export default class TestsPage extends Component {
         )
       }
 
+
       return (
         <tbody>
           {listAB.map((testId, index) => {
             let test = tests[testId];
+            let isFailed = test.metadata_last_run.length > 0 && metadata_lifetimes[test.metadata_last_run[0]].failed_count > 0 ? " failed-box" : " no-fail";
             return (
               <tr key={test.id}>
                 <td>{(paginationAB.page - 1) * 10 + index + 1}</td>
@@ -161,18 +165,18 @@ export default class TestsPage extends Component {
                   </Link>
                 </td>
                 <td>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].datetime : '-'}</td>
-                <td class="text-center">{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].passed_count : '-'}</td>
-                <td class="text-center">{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].failed_count : '-'}</td>
+                <td class="text-center"><span>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].passed_count : '-'}</span></td>
+                <td class={"text-center " + isFailed}><span>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].failed_count : '-'}</span></td>
                 <td>
-                  {queue[test.id] ? "Running..." :
-                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, '')}>
+                  {queue[test.id] ? getReadableRunName(queue[test.id].status) :
+                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, test.type, '')}>
                       {test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
                     </button>
                   }
                 </td>
                 <td>
                   {deleting[test.id] ? "Deleting..." :
-                    <button class="btn btn-link btn-sm" onClick={this.deleteTest.bind(this, test.id, 'a_b')}>Delete</button>
+                    <button class="btn btn-link btn-sm delete like-link" onClick={this.deleteTest.bind(this, test.id, 'a_b')}>Delete</button>
                   }
                 </td>
               </tr>
@@ -217,6 +221,7 @@ export default class TestsPage extends Component {
 
           lastReference = metadata_lifetimes[test.metadata_last_run[0]];
           lastTest = metadata_lifetimes[test.metadata_last_run[1]];
+          let isFailed = !jQuery.isEmptyObject(lastTest) && lastTest.failed_count > 0 ? " failed-box" : " no-fail";
 
           return (
             <tr key={test.id}>
@@ -228,8 +233,8 @@ export default class TestsPage extends Component {
               </td>
               <td>
                 {!jQuery.isEmptyObject(lastReference) ? lastReference.datetime : '-'}
-                {queue[test.id] ? (queue[test.id].stage === "before" ? "Running..." : "After is in queue") :
-                  <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, 'before')}>
+                {queue[test.id] ? (queue[test.id].stage === "before" ? getReadableRunName(queue[test.id].status) : "After is in queue") :
+                  <button class={!jQuery.isEmptyObject(lastReference)? "btn btn-primary btn-sm like-link" : "btn btn-primary btn-sm"} onClick={this.runTest.bind(this, test.id, test.type, 'before')}>
                     {!jQuery.isEmptyObject(lastReference) ? 'Recreate shots' : 'Create shots'}
                   </button>
                 }
@@ -237,20 +242,20 @@ export default class TestsPage extends Component {
               {!jQuery.isEmptyObject(lastReference) ? (
                 <td>
                   {!jQuery.isEmptyObject(lastTest) ? lastTest.datetime : '-'}
-                  {queue[test.id] ? (queue[test.id].stage === "after" ? "Running..." : "Reference is in queue") :
-                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, 'after')}>
+                  {queue[test.id] ? (queue[test.id].stage === "after" ? getReadableRunName(queue[test.id].status) : "Reference is in queue") :
+                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, test.type, 'after')}>
                       {!jQuery.isEmptyObject(lastTest) ? 'Re-run the test' : 'Run the test'}
                     </button>
                   }
                 </td>
               ) : (
-                  <td>-</td>
+                <td>-</td>
               )}
-              <td class="text-center">{!jQuery.isEmptyObject(lastTest) ? lastTest.passed_count : '-'}</td>
-              <td class="text-center">{!jQuery.isEmptyObject(lastTest) ? lastTest.failed_count : '-'}</td>
+              <td class="text-center"><span>{!jQuery.isEmptyObject(lastTest) ? lastTest.passed_count : '-'}</span></td>
+              <td class={"text-center" + isFailed}><span>{!jQuery.isEmptyObject(lastTest) ? lastTest.failed_count : '-'}</span></td>
               <td>
                 {deleting[test.id] ? "Deleting..." :
-                  <button class="btn btn-link btn-sm" onClick={this.deleteTest.bind(this, test.id, 'before_after')}>Delete</button>
+                  <button class="btn btn-link btn-sm delete like-link" onClick={this.deleteTest.bind(this, test.id, 'before_after')}>Delete</button>
                 }
               </td>
             </tr>

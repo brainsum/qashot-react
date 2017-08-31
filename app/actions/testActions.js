@@ -22,7 +22,7 @@ export function runTest(id, type, stage) {
   return {
     type: "RUN_TEST_ONLY",
     payload: axios().post('api/rest/v1/qa_shot_test/' + id + '/queue?_format=json', {
-      test_stage: stage,
+      stage: stage,
       type: type,
       frontend_url: generateTestUrl(id),
     }),

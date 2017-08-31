@@ -1,5 +1,6 @@
 import axios from '../utils/axios';
 import {generateTestUrl} from "../utils/helper";
+import {runTest} from "./testActions";
 
 export function loadTestEditor() {
   return {
@@ -168,18 +169,11 @@ export function saveTest(curState, type) {
 
 export function saveAndRunTest(curState, type) {
   return (dispatch, getState) => {
-    dispatch(saveTest(curState)).then(() => {
+    dispatch(saveTest(curState, type)).then(() => {
       let curState = getState();
       const { error, result, resultIsTest } = curState.editor;
       if (!error && result && resultIsTest) {
-        dispatch({
-          type: "RUN_TEST",
-          payload: axios().post('api/rest/v1/qa_shot_test/' + result.data.id[0].value + '/queue?_format=json', {
-            test_stage: type === "a_b" ? "" : "before",
-            type: type,
-            frontend_url: generateTestUrl(id),
-          }),
-        });
+        dispatch(runTest(result.data.id, type, (type === "a_b" ? "" : "before")));
       }
     });
   };

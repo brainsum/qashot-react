@@ -90,6 +90,72 @@ export default function reducer(state={
         ]
       }
     }
+    case "CLEAR_MESSAGES_FROM": {
+      switch (action.payload) {
+        case "success": {
+          return {
+            ...state,
+            successMessage: [],
+          }
+        }
+        case "warning": {
+          return {
+            ...state,
+            warningMessage: [],
+          }
+        }
+        case "error": {
+          return {
+            ...state,
+            errorMessage: [],
+          }
+        }
+        case "info": {
+          return {
+            ...state,
+            infoMessage: [],
+          }
+        }
+      }
+      break;
+    }
+    case "REMOVE_MESSAGE_FROM": {
+      let propName = "";
+      switch (action.payload.message_type) {
+        case "success": {
+          propName = "successMessage";
+          break;
+        }
+        case "warning": {
+          propName = "warningMessage";
+          break;
+        }
+        case "error": {
+          propName = "errorMessage";
+          break;
+        }
+        case "info": {
+          propName = "infoMessage";
+          break;
+        }
+      }
+
+      let index = null;
+      for (let i = 0; i < state[propName].length; i++) {
+        if (action.payload.id === state[propName][i].id) {
+          index = i;
+          break;
+        }
+      }
+
+      return {
+        ...state,
+        [propName]: [
+          ...state[propName].slice(0, index),
+          ...state[propName].slice(index + 1),
+        ],
+      };
+    }
   }
 
   if (action.type.endsWith("_REJECTED")) {

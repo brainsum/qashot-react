@@ -30,22 +30,6 @@ export default function reducer(state={
         successMessage: null,
       };
     }
-    case "RUN_TEST_ONLY_PENDING": {
-      return {...state, fetching: true, message: "Test is running now... Be patient...", testIsRunning: true, successMessage: null};
-    }
-    case "RUN_TEST_ONLY_REJECTED": {
-      return {...state, fetching: false, error: action.payload, message: null, testIsRunning: false, successMessage: null};
-    }
-    case "RUN_TEST_ONLY_FULFILLED": {
-      return {
-        ...state,
-        fetching: false,
-        fetched: true,
-        message: null,
-        testIsRunning: false,
-        successMessage: action.payload.message,
-      };
-    }
     case "FETCH_test_PENDING": {
       return {
         test: {},

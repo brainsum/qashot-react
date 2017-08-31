@@ -2,37 +2,102 @@
 .tests-page
   h2, .h2
     margin-bottom: 1em
+    color: #8a8a8a
+    font-size: 24px
+
+    &:before
+      position: relative
+      top: 5px
+      background-size: 28px 28px
+      content: ""
+      height: 28px
+      width: 28px
+      display: inline-block
+      margin-right: 10px
+
+    strong
+      color: black
 
 .container
   &__inner
     padding-left: 2rem
     padding-right: 2rem
 
+    button.btn
+      background-color: rgb(66, 139, 202)
+      border-color: rgb(53, 126, 189)
+      cursor: pointer
+
+      &.delete
+        background-color: transparent
+        border-color: transparent
+
+      &.like-link
+        color: #9c9c9c
+        text-decoration: underline
+        font-size: 12px
+        background: none
+        border: none
+        padding: 0
+
+        &:hover,
+        &:active,
+        &:focus
+          color: #9c9c9c
+          text-decoration: underline
+
     .two-website-compare h2:before
-      background-size: 28px 28px
       background: url("/img/compare.svg") center center
-      content: ""
-      height: 28px
-      width: 28px
-      display: inline-block
       border-radius: 50%
       border: 3px solid black
-      margin-right: 10px
 
     .before-after-compare
       margin-top: 100px
 
       h2:before
-        background-size: 28px 28px
         background: url("/img/before-after.svg") center center
-        content: ""
-        height: 28px
-        width: 28px
-        display: inline-block
-        margin-right: 10px
 
       table button
         margin: auto 10px
+
+    table
+      thead
+        font-size: 14px
+
+        th
+          padding: .4rem
+
+      tbody
+        font-size: 12px
+
+        td
+          padding: .4rem
+          &:nth-of-type(2)
+            font-weight: bold
+            font-size: 14px
+
+            a
+              color: black
+              text-decoration: underline
+
+      td.failed-box span
+        border-radius: 2px
+        border: 0 solid rgb(200, 200, 200)
+        background-color: rgb(207, 85, 87)
+        color: white
+        padding: 3px 7px
+
+    a.add-new-cases
+      color: black
+      text-decoration: underline
+      padding: 0
+      margin: -0.5em 0 2em 3em
+
+      &:active,
+      &:hover,
+      &:focus
+        color: black
+        text-decoration: underline
 
 .page
   &__header
