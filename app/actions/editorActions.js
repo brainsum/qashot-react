@@ -131,7 +131,7 @@ export function changeOrAddTagsValue(i, value) {
   }
 }
 
-export function saveTest(curState, type) {
+export function saveTest(curState, uid, type) {
   let scenarios = [], viewport = [];
 
   curState.viewports.viewportsItems.forEach((viewportItem) => {
@@ -153,7 +153,7 @@ export function saveTest(curState, type) {
   return {
     type: "SAVE_TEST",
     payload: axios().post('api/rest/v1/qa_shot_test?_format=json', {
-      user_id: 1,
+      user_id: uid,
       name: curState.title,
       type: type,
       field_scenario: scenarios,
@@ -167,9 +167,9 @@ export function saveTest(curState, type) {
   }
 }
 
-export function saveAndRunTest(curState, type) {
+export function saveAndRunTest(curState, uid, type) {
   return (dispatch, getState) => {
-    dispatch(saveTest(curState, type)).then(() => {
+    dispatch(saveTest(curState, uid, type)).then(() => {
       let curState = getState();
       const { error, result, resultIsTest } = curState.editor;
       if (!error && result && resultIsTest) {

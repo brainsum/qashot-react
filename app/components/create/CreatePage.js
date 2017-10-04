@@ -19,6 +19,7 @@ import Messages from "../part/message";
 @connect((store) => {
   return {
     settings: store.editor,
+    uid: store.user.user.id,
   };
 })
 export default class TwoWebsiteComparsionCreatePage extends Component {
@@ -77,11 +78,11 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
   }
 
   save() {
-    this.props.dispatch(saveTest(this.props.settings, this.state.type));
+    this.props.dispatch(saveTest(this.props.settings, this.props.uid, this.state.type));
   }
 
   runTest() {
-    this.props.dispatch(saveAndRunTest(this.props.settings, this.state.type));
+    this.props.dispatch(saveAndRunTest(this.props.settings, this.props.uid, this.state.type));
   }
 
   handleClick = () => {
