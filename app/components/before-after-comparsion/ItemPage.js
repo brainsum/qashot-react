@@ -366,8 +366,8 @@ export default class BeforeAfterComparsionItemPage extends Component {
         settingsData: {
           ...this.state.settingsData,
           [propName]: [
-            ...state[propName].slice(0, i),
-            ...state[propName].slice(i + 1)
+            ...this.state.settingsData[propName].slice(0, i),
+            ...this.state.settingsData[propName].slice(i + 1)
           ]
         },
       });
@@ -464,39 +464,49 @@ export default class BeforeAfterComparsionItemPage extends Component {
           <h1 class="comparation ba">
             <input value={name} onChange={this.changeName.bind(this)}/>
           </h1>
-          <div id="compare-site-other-data">
-          Selectors to hide:<br/>
-          {selectorsToHide.map((toHide, i) => {
-            return (<div key={"toHide" + i}>{i + 1}. <input ref={"selectorsToHide-" + i} type="text" value={toHide} onChange={this.changeArrayValue.bind(this, i, 'selectorsToHide')}/></div>);
-          })}
-          {selectorsToHide.length + 1}. <input key={"toHide" + selectorsToHide.length} type="text" value="" onChange={this.changeArrayValue.bind(this, selectorsToHide.length, 'selectorsToHide')}/><br/>
-          Selectors to remove<br/>
-          {selectorsToRemove.map((toRemove, i) => {
-            return (<div key={"toRemove" + i}>{i + 1}. <input ref={"selectorsToRemove-" + i} type="text" value={toRemove} onChange={this.changeArrayValue.bind(this, i, 'selectorsToRemove')}/></div>);
-          })}
-          {selectorsToRemove.length + 1}. <input key={"toRemove" + selectorsToRemove.length} type="text" value="" onChange={this.changeArrayValue.bind(this, selectorsToRemove.length, 'selectorsToRemove')}/><br/>
-          Tester engine:
-          <select value={testerEngine} onChange={this.changeEngine.bind(this)}>
-            {diffEngines.map((engine) => {
-              return <option key={engine.code} value={engine.code}>{engine.name}</option>
-            })}
-          </select><br/>
-          Diff color:
-            <div class="color-picker-swatch" onClick={ this.handleClick }>
-              <div class="color-picker-color" style={ {background: color} } />
+          <div id="compare-site-other-data" class="compare-site-other-data">
+            <div class="expandable-list">
+              <div class="input-title">Selectors to hide:</div>
+              {selectorsToHide.map((toHide, i) => {
+                return (<div key={"toHide" + i}>{i + 1}. <input ref={"selectorsToHide-" + i} type="text" value={toHide} onChange={this.changeArrayValue.bind(this, i, 'selectorsToHide')}/></div>);
+              })}
+              <div>{selectorsToHide.length + 1}. <input key={"toHide" + selectorsToHide.length} type="text" value="" onChange={this.changeArrayValue.bind(this, selectorsToHide.length, 'selectorsToHide')}/></div>
             </div>
-            { this.state.displayColorPicker ? <div class="color-picker-popover">
-              <div class="color-picker-cover" onClick={ this.handleClose }/>
-              <SketchPicker disableAlpha color={color} onChange={ this.handleChange } />
-            </div> : null }<br/>
-          Tags:<br/>
-          {tags.map((tags, i) => {
-            return (<div key={"tags" + i}>{i + 1}. <input ref={"tags-" + i} type="text" value={tags} onChange={this.changeArrayValue.bind(this, i, 'tags')}/></div>);
-          })}
-          {tags.length + 1}. <input key={"tags" + tags.length} type="text" value="" onChange={this.changeArrayValue.bind(this, tags.length, 'tags')}/><br/>
+            <div class="expandable-list">
+              <div class="input-title">Selectors to remove</div>
+              {selectorsToRemove.map((toRemove, i) => {
+                return (<div key={"toRemove" + i}>{i + 1}. <input ref={"selectorsToRemove-" + i} type="text" value={toRemove} onChange={this.changeArrayValue.bind(this, i, 'selectorsToRemove')}/></div>);
+              })}
+              <div>{selectorsToRemove.length + 1}. <input key={"toRemove" + selectorsToRemove.length} type="text" value="" onChange={this.changeArrayValue.bind(this, selectorsToRemove.length, 'selectorsToRemove')}/></div>
+            </div>
+            <div>
+              Tester engine:&nbsp;
+              <select value={testerEngine} onChange={this.changeEngine.bind(this)}>
+                {diffEngines.map((engine) => {
+                  return <option key={engine.code} value={engine.code}>{engine.name}</option>
+                })}
+              </select>
+            </div>
+            <div>
+              Diff color:&nbsp;
+              <div class="color-picker-swatch" onClick={ this.handleClick }>
+                <div class="color-picker-color" style={ {background: color} } />
+              </div>
+              { this.state.displayColorPicker ? <div class="color-picker-popover">
+                <div class="color-picker-cover" onClick={ this.handleClose }/>
+                <SketchPicker disableAlpha color={color} onChange={ this.handleChange } />
+              </div> : null }
+            </div>
+            <div class="expandable-list">
+              <div class="input-title">Tags:</div>
+              {tags.map((tags, i) => {
+                return (<div key={"tags" + i}>{i + 1}. <input ref={"tags-" + i} type="text" value={tags} onChange={this.changeArrayValue.bind(this, i, 'tags')}/></div>);
+              })}
+              <div>{tags.length + 1}. <input key={"tags" + tags.length} type="text" value="" onChange={this.changeArrayValue.bind(this, tags.length, 'tags')}/></div>
+            </div>
           </div>
-          <div class="settings-actions">
-            <a onClick={this.cancelSettings.bind(this)}>Cancel</a> <a onClick={this.saveSettings.bind(this)}>Save</a>
+          <div class="settings-actions action-btn">
+            <a onClick={this.saveSettings.bind(this)} class="btn btn-link btn-sm save">Save</a> <a onClick={this.cancelSettings.bind(this)} class="btn btn-link btn-sm">Cancel</a>
           </div>
         </div>
       );
@@ -578,9 +588,9 @@ export default class BeforeAfterComparsionItemPage extends Component {
       let viewportsItems = [];
       for (let i = 0; i < this.state.editViewport.length; i++) {
         viewportsItems.push(<div key={i}>
-          {i + 1}. <input type="text" class="viewport-width" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={this.state.editViewport[i].field_width} />*
+          {i + 1}. <input type="text" class="viewport-width" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={this.state.editViewport[i].field_width} />x
           <input type="text" class="viewport-height" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={this.state.editViewport[i].field_height} />
-          &nbsp;(<input type="text" class="viewport-name" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={this.state.editViewport[i].field_name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
+          &nbsp;<input type="text" class="viewport-name" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={this.state.editViewport[i].field_name} /> <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
         </div>);
       }
 
@@ -632,7 +642,7 @@ export default class BeforeAfterComparsionItemPage extends Component {
             return (
               <div key={i}>
                 <div class="scenario-info">
-                  <h2><input type="text" placeholder="Scenario name" value={editData.field_label} onChange={this.changeValueOfPageUrlPair.bind(this, scenarioId, "field_label")}/> (<a onClick={this.cancelEditScenario.bind(this, scenarioId)}>cancel</a> <a onClick={this.saveScenario.bind(this, scenarioId)}>save</a> <a onClick={this.deleteScenario.bind(this, scenarioId)}>delete</a>)</h2>
+                  <div class="scenario-name"><input type="text" placeholder="Scenario name" value={editData.field_label} onChange={this.changeValueOfPageUrlPair.bind(this, scenarioId, "field_label")}/> <span class="operations">(<a onClick={this.cancelEditScenario.bind(this, scenarioId)}>cancel</a> <a onClick={this.saveScenario.bind(this, scenarioId)}>save</a> <a onClick={this.deleteScenario.bind(this, scenarioId)}>delete</a>)</span></div>
                   <div class="urls row">
                     <div class="url2 col-lg-5">
                       <div class="url2-title">URL</div>
@@ -644,10 +654,21 @@ export default class BeforeAfterComparsionItemPage extends Component {
             );
           }
 
+          let plussClass = "";
           return (
             <div key={i}>
               <div class="scenario-info">
-                <h2>{scenario.field_label} (<a onClick={this.editScenario.bind(this, scenarioId)}>edit</a>)</h2>
+                {
+                  data.field_viewport.map((viewportId, j) => {
+                    if (this.results.hasOwnProperty(scenarioId) && this.results[scenarioId].hasOwnProperty(viewportId) && this.results[scenarioId][viewportId].success === "1" && plussClass === "") {
+                      plussClass = "success";
+                    }
+                    else if (this.results.hasOwnProperty(scenarioId) && this.results[scenarioId].hasOwnProperty(viewportId) && this.results[scenarioId][viewportId].success === "0") {
+                      plussClass = "failed";
+                    }
+                  })
+                }
+                <div class={"scenario-name " + plussClass}>{scenario.field_label} <span class="operations">(<a onClick={this.editScenario.bind(this, scenarioId)}>edit</a>)</span></div>
                 <div class="row">
                   <div class="col-lg-8">{scenario.field_test_url}</div>
                   <div class="col-lg-4">Difference</div>
@@ -694,7 +715,7 @@ export default class BeforeAfterComparsionItemPage extends Component {
 
   renderTestResultsViewportsExpanded(i, j, viewportItem) {
     return (<div key={j} class="row">
-      <h3 class="col-lg-12">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</h3>
+      <div class="viewport-name col-lg-12">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</div>
       <div class="source col-lg-4">
         <img src={this.results[i][j].full_reference}/>
       </div>
@@ -707,14 +728,14 @@ export default class BeforeAfterComparsionItemPage extends Component {
 
   renderTestResultsViewportsCollapsed(i, j, viewportItem) {
     return (<div key={j} class="row">
-      <h3 class="col-lg-8">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</h3>
+      <div class="viewport-name col-lg-8">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</div>
       {this.renderTestResult(this.results[i][j].success, this.results[i][j].full_diff)}
     </div>);
   }
 
   renderTestResultsViewportsNone(j, viewportItem) {
     return (<div key={j} class="row">
-      <h3 class="col-lg-8">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</h3>
+      <div class="viewport-name col-lg-8">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</div>
       <div class="compare col-lg-4"><span class="difference-info">There's no test result for this. Please run the test first.</span></div>
     </div>);
   }

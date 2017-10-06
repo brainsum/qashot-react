@@ -50,3 +50,19 @@ input:not([type=radio])
   border-radius: 4px
   border: 1px solid rgb(219, 219, 219)
   height: 40px
+
+// Applies to create and view pages.
+.compare-site-other-data
+  > div
+    margin-bottom: 1.5em
+
+    .input-title
+      margin-bottom: .5em
+
+    &.expandable-list > div:nth-of-type(-n + 10):not(.input-title)
+      padding-left: 9px
+
+  input:not([type=radio])
+    width: 545px
+    height: 40px
+    margin-bottom: 5px

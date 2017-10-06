@@ -181,19 +181,19 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
           </div>
         </div>
         <div id="compare-site-other-data" class="compare-site-other-data">
-          <div>
+          <div class="expandable-list">
             <div class="input-title">Selectors to hide:</div>
             {selectorsToHide.map((toHide, i) => {
               return (<div key={"toHide" + i}>{i + 1}. <input ref={"selectorsToHide-" + i} type="text" value={toHide} onChange={this.changeHideValue.bind(this, i)}/></div>);
             })}
-            {selectorsToHide.length + 1}. <input key={"toHide" + selectorsToHide.length} type="text" value="" onChange={this.changeHideValue.bind(this, selectorsToHide.length)}/>
+            <div>{selectorsToHide.length + 1}. <input key={"toHide" + selectorsToHide.length} type="text" value="" onChange={this.changeHideValue.bind(this, selectorsToHide.length)}/></div>
           </div>
-          <div>
+          <div class="expandable-list">
             <div class="input-title">Selectors to remove</div>
             {selectorsToRemove.map((toRemove, i) => {
               return (<div key={"toRemove" + i}>{i + 1}. <input ref={"selectorsToRemove-" + i} type="text" value={toRemove} onChange={this.changeRemoveValue.bind(this, i)}/></div>);
             })}
-            {selectorsToRemove.length + 1}. <input key={"toRemove" + selectorsToRemove.length} type="text" value="" onChange={this.changeRemoveValue.bind(this, selectorsToRemove.length)}/>
+            <div>{selectorsToRemove.length + 1}. <input key={"toRemove" + selectorsToRemove.length} type="text" value="" onChange={this.changeRemoveValue.bind(this, selectorsToRemove.length)}/></div>
           </div>
           <div>
             Tester engine:&nbsp;
@@ -213,12 +213,12 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
                 <SketchPicker disableAlpha color={color} onChange={ this.handleChange } />
               </div> : null }
           </div>
-          <div>
+          <div class="expandable-list">
             <div class="input-title">Tags:</div>
             {tags.map((tags, i) => {
               return (<div key={"tags" + i}>{i + 1}. <input ref={"tags-" + i} type="text" value={tags} onChange={this.changeTagsValue.bind(this, i)}/></div>);
             })}
-            {tags.length + 1}. <input key={"tags" + tags.length} type="text" value="" onChange={this.changeTagsValue.bind(this, tags.length)}/>
+            <div>{tags.length + 1}. <input key={"tags" + tags.length} type="text" value="" onChange={this.changeTagsValue.bind(this, tags.length)}/></div>
           </div>
         </div>
         <div class="action-btn">
