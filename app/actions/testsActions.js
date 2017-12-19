@@ -4,11 +4,20 @@ import store from "../store";
 
 export function fetchTests(testType = "") {
   let state = store.getState();
+  // If first page not cached yet, ask server for data.
   if (!state.tests.pagesAB[1] && testType === "a_b" || !state.tests.pagesBA[1] && testType === "before_after" || testType === "") {
     return {
       type: testType === "a_b" ? "FETCH_AB_TESTS" : (testType === "before_after" ? "FETCH_BA_TESTS" : "FETCH_TESTS"),
       payload: axios().get('api/rest/v1/test_list?_format=json&type=' + testType)
     };
+  }
+
+  // If user goes back from other page to the main page, go to the last page state.
+  if (testType === "a_b" && state.tests.paginationAB.page !== 0 || testType === "before_after" && state.tests.paginationBA.page !==0) {
+    return {
+      type: "UPDATE_CURRENT_PAGE_NUMBER",
+      payload: {page: (testType === "a_b" ? state.tests.paginationAB.page : state.tests.paginationBA.page), type: testType},
+    }
   }
 
   return {
