@@ -60,7 +60,7 @@ window.addEventListener('storage', (evt) => createStorageListener(store, evt));
 /* Load store from local store */
 function loadStoreFromLocalStore() {
   let storageString = localStorage.getItem(localStoreKey);
-  if (typeof storageString !== "undefined" && storageString !== "") {
+  if (typeof storageString !== "undefined" && storageString !== "" && storageString !== null) {
     store.dispatch({
       type: "LOAD_FROM_LOCAL_STORAGE",
       data: JSON.parse(storageString)

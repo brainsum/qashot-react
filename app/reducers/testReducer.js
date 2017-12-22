@@ -13,7 +13,7 @@ export default function reducer(state={
 
   switch (action.type) {
     case "LOAD_FROM_LOCAL_STORAGE": {
-      if (typeof action.data !== "undefined" && typeof action.data.test !== "undefined") {
+      if (typeof action.data !== "undefined" && action.data !== null && typeof action.data.test !== "undefined") {
         return action.data.test;
       }
       return state;
