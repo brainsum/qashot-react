@@ -37,6 +37,45 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOGOUT": {
+      return {
+        title: "",
+        viewports: {
+          editOn: true,
+          nextId: 1,
+          viewportsItems: [
+            {
+              width: "",
+              height: "",
+              name: "",
+              id: 0,
+            },
+          ],
+        },
+        pages: {
+          nextId: 1,
+          pagesItems: [
+            {
+              source: "",
+              destination: "",
+              name: "",
+              id: 0,
+            },
+          ],
+        },
+        color: "#ff00ff",
+        testerEngine: "phantomjs",
+        tags: [],
+        selectorsToHide: [],
+        selectorsToRemove: [],
+        result: null,
+        resultIsTest: false,
+        fetching: false,
+        fetched: false,
+        error: null,
+        state: null,
+      };
+    }
     case "LOAD_FROM_LOCAL_STORAGE": {
       if (typeof action.data !== "undefined" && action.data !== null && typeof action.data.editor !== "undefined") {
         return action.data.editor;

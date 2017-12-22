@@ -6,6 +6,14 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOGOUT": {
+      return {
+        errorMessage: [],
+        warningMessage: [],
+        successMessage: [],
+        infoMessage: [],
+      };
+    }
     case "LOAD_FROM_LOCAL_STORAGE": {
       if (typeof action.data !== "undefined" && action.data !== null && typeof action.data.messages !== "undefined") {
         return action.data.messages;

@@ -18,6 +18,22 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOGOUT": {
+      return {
+        pagesAB: {},
+        paginationAB: {
+          page: 0,
+        },
+        pagesBA: {},
+        paginationBA: {
+          page: 0,
+        },
+        fetching: false,
+        fetched: false,
+        error: null,
+        deleting: [],
+      };
+    }
     case "LOAD_FROM_LOCAL_STORAGE": {
       if (typeof action.data !== "undefined" && action.data !== null && typeof action.data.tests !== "undefined") {
         return action.data.tests;

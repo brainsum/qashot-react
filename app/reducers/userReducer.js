@@ -7,6 +7,15 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOGOUT": {
+      return {
+        user: {},
+        loginname: "",
+        password: "",
+        csrfToken: "",
+        success: false,
+      };
+    }
     case "LOAD_FROM_LOCAL_STORAGE": {
       if (typeof action.data !== "undefined" && action.data !== null && typeof action.data.user !== "undefined") {
         return action.data.user;

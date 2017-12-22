@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import TestsPage from './tests/TestsPage';
 import CreateTwoWebsiteComparsionPage from './create/CreatePage';
 import TwoWebsiteComparsionPage from './two-website-comparsion/ItemPage';
-import {setUserLoginData, userLogin} from "../actions/userActions";
+import {setUserLoginData, userLogin, userLogout} from "../actions/userActions";
 import Messages from "./part/message";
 import BeforeAfterComparsionItemPage from "./before-after-comparsion/ItemPage";
 
@@ -47,7 +47,19 @@ export default class App extends Component {
     });
   }
 
+  logout() {
+    this.props.dispatch(userLogout());
+    return false;
+  }
+
   render() {
+    const { loginname, password, success } = this.props;
+
+    let logout = null;
+    if (loginname !== null && password !== null && success) {
+      logout = <li class="nav-item"><a class="nav-link" onClick={this.logout.bind(this)} href="#">Logout</a></li>;
+    }
+
     return (
       <HashRouter>
         <div class="container page">
@@ -56,6 +68,20 @@ export default class App extends Component {
               <h1>QA Shot</h1>
               <span>Automated Screenshot Comparisons</span>
             </Link>
+            {logout === null ? "" :
+              <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"/>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                  <ul class="navbar-nav">
+                    <li class="nav-item">
+                      {logout}
+                    </li>
+                  </ul>
+                </div>
+              </nav>
+            }
           </header>
           {this.renderContent()}
           <footer class="container__inner page__footer">

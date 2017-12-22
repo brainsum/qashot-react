@@ -7,6 +7,13 @@ export function userLogin() {
   };
 }
 
+export function userLogout() {
+  return {
+    type: "LOGOUT",
+    payload: null
+  };
+}
+
 export function setUserLoginData(loginname, password) {
   return {
     type: "SET_LOGIN_DATA",

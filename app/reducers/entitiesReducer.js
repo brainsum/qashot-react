@@ -15,6 +15,16 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOGOUT": {
+      return {
+        metadata_lifetimes: {},
+        queue: {},
+        results: {},
+        scenarios: {},
+        tests: {},
+        viewports: {},
+      };
+    }
     case "LOAD_FROM_LOCAL_STORAGE": {
       if (typeof action.data !== "undefined" && action.data !== null && typeof action.data.entities !== "undefined") {
         return action.data.entities;

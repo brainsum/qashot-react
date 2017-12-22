@@ -12,6 +12,17 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOGOUT": {
+      return {
+        test: {},
+        fetching: false,
+        fetched: false,
+        testIsRunning: false,
+        error: null,
+        message: null,
+        successMessage: null,
+      };
+    }
     case "LOAD_FROM_LOCAL_STORAGE": {
       if (typeof action.data !== "undefined" && action.data !== null && typeof action.data.test !== "undefined") {
         return action.data.test;
