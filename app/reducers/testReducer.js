@@ -12,6 +12,12 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOAD_FROM_LOCAL_STORAGE": {
+      if (typeof action.data !== "undefined" && typeof action.data.test !== "undefined") {
+        return action.data.test;
+      }
+      return state;
+    }
     case "FETCH_TEST_PENDING": {
       return {...state, fetching: true};
     }

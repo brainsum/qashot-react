@@ -37,6 +37,12 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOAD_FROM_LOCAL_STORAGE": {
+      if (typeof action.data !== "undefined" && typeof action.data.editor !== "undefined") {
+        return action.data.editor;
+      }
+      return state;
+    }
     case "LOAD_TEST_EDITOR":
     case "FETCH_TEST_PENDING": {
       return {...state,

@@ -15,6 +15,12 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOAD_FROM_LOCAL_STORAGE": {
+      if (typeof action.data !== "undefined" && typeof action.data.entities !== "undefined") {
+        return action.data.entities;
+      }
+      return state;
+    }
     case "PATCH_TEST_FULFILLED":
     case "FETCH_TEST_FULFILLED": {
       let norm = normalize(action.payload.data, testSchema);

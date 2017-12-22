@@ -8,6 +8,7 @@ import {
 import { deleteTest } from "../../actions/testsActions";
 import {getReadableRunName} from "../../utils/helper";
 import {runTest} from "../../actions/testActions";
+import jQuery from 'jquery';
 
 @connect((store) => {
   return {

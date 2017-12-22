@@ -6,6 +6,12 @@ export default function reducer(state={
 }, action) {
 
   switch (action.type) {
+    case "LOAD_FROM_LOCAL_STORAGE": {
+      if (typeof action.data !== "undefined" && typeof action.data.messages !== "undefined") {
+        return action.data.messages;
+      }
+      return state;
+    }
     case "GET_PERIODIC_ENTITY_UPDATE_REJECTED":
     case "GET_PERIODIC_QUEUE_UPDATE_REJECTED": {
       // Don't show these errors for the user.
