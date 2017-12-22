@@ -38,3 +38,5 @@ export const diffEngines = [
     code: "slimerjs",
   }
 ];
+
+export const sourceId = Math.floor(Math.random() * 10000);
