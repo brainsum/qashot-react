@@ -2,11 +2,9 @@ version: "2"
 
 services:
   app:
-#    image: node:6.10-alpine
+    image: brainsum/qashot-react:0.1.0
     build:
       context: .
-      dockerfile: app.dockerfile
-    working_dir: /home/node/src
     labels:
       - 'traefik.backend=node'
       - 'traefik.port=3000'
@@ -14,5 +12,4 @@ services:
     ports:
      - "8080:8080"
     volumes:
-      - .:/home/node/src
-#    command: yarn start
+      - ./:/home/node/src
