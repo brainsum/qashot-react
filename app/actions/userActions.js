@@ -3,7 +3,7 @@ import axios from '../utils/axios';
 export function userLogin() {
   return {
     type: "LOGIN",
-    payload: axios().post(`api/rest/v1/login`)
+    payload: axios().post(`api/rest/v1/login?_format=json`)
   };
 }
 
