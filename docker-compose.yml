@@ -5,11 +5,5 @@ services:
     image: brainsum/qashot-react:0.1.0
     build:
       context: .
-    labels:
-      - 'traefik.backend=node'
-      - 'traefik.port=3000'
-      - 'traefik.frontend.rule=Host:front.drupal.docker.localhost'
     ports:
-     - "8080:8080"
-    volumes:
-      - ./:/home/node/src
+     - "8080:80"

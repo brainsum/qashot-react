@@ -20,17 +20,17 @@ RUN \
     yarn run build \
     && yarn cache clean
 
+# Actual
+FROM pagespeed/nginx-pagespeed:1.13.35-alpine3.8-ngx1.15
 
-FROM node:6.16.0-alpine as dist
+LABEL maintainer="mhavelant"
 
-# Pre-create workdir for proper permissions
-RUN \
-    mkdir -m 775 -p /home/node/src \
-    && chown node:node /home/node -R
+WORKDIR /var/www/
 
-WORKDIR /home/node/src
-USER node
-CMD [ "yarn", "start" ]
-EXPOSE 8080
+COPY --from=builder --chown=nginx:nginx ["/home/node/src/build", "/var/www/build"]
+COPY ["docker/nginx_config/nginx.conf", "/etc/nginx/conf.d/default.conf"]
+COPY ["docker/nginx_config/additional", "/etc/nginx/additional"]
 
-COPY --chown=node --from=builder ["/home/node/src", "./"]
+EXPOSE 80
+
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
