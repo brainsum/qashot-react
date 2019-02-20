@@ -1,5 +1,4 @@
 import axios from '../utils/axios';
-import {generateTestUrl} from "../utils/helper";
 import {runTest} from "./testActions";
 
 export function loadTestEditor() {

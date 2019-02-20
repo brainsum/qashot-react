@@ -8,8 +8,8 @@ export default () => {
   let password = state.user.password;
 
   let exactAxio = axios.create({
-    // baseURL: 'http://ec2-52-51-88-127.eu-west-1.compute.amazonaws.com',
-    baseURL: 'http://qashot.docker.localhost:8000',
+    baseURL: 'http://ec2-52-51-88-127.eu-west-1.compute.amazonaws.com',
+    //baseURL: 'http://qashot.docker.localhost:8000',
     //baseURL: 'http://qashot.dd:8083',
     auth: {
       username: loginname,

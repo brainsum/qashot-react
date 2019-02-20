@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom'
 import {
   fetchTests, fetchTestsByUrl, fetchTestsByPageAndLimit,
   getEntityUpdate, getQueueUpdate
@@ -10,20 +10,7 @@ import {getReadableRunName} from "../../utils/helper";
 import {runTest} from "../../actions/testActions";
 import jQuery from 'jquery';
 
-@connect((store) => {
-  return {
-    isLoading: store.tests.fetching,
-    deleting: store.tests.deleting,
-    tests: store.entities.tests,
-    queue: store.entities.queue,
-    metadata_lifetimes: store.entities.metadata_lifetimes,
-    listAB: store.tests.pagesAB[store.tests.paginationAB.page],
-    paginationAB: store.tests.paginationAB,
-    listBA: store.tests.pagesBA[store.tests.paginationBA.page],
-    paginationBA: store.tests.paginationBA,
-  };
-})
-export default class TestsPage extends Component {
+class TestsPage extends Component {
   componentDidMount() {
     this.props.dispatch(fetchTests('a_b'));
     this.props.dispatch(fetchTests('before_after'));
@@ -74,51 +61,51 @@ export default class TestsPage extends Component {
     const { paginationAB, paginationBA } = this.props;
 
     return (
-      <div class="tests-page">
-        <div class="two-website-compare">
+      <div className="tests-page">
+        <div className="two-website-compare">
           <h2>
             <strong>2 website</strong> comparsions (eg. Development VS Live)
           </h2>
 
-          <table class="table table-striped type--a-b">
+          <table className="table table-striped type--a-b">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Session name</th>
                 <th>Last run</th>
-                <th class="text-center">Tests Passed</th>
-                <th class="text-center">Tests Failed</th>
+                <th className="text-center">Tests Passed</th>
+                <th className="text-center">Tests Failed</th>
                 <th width="1%"></th>
                 <th width="1%"></th>
               </tr>
             </thead>
             {this.renderABTests()}
           </table>
-          <Link to="/create/two-website-comparsion" class="btn btn-link btn-sm add-new-cases">
+          <Link to="/create/two-website-comparsion" className="btn btn-link btn-sm add-new-cases">
             + Add new session
           </Link>
           {this.renderPagination(paginationAB, "a_b")}
         </div>
-        <div class="before-after-compare">
+        <div className="before-after-compare">
           <h2>
             <strong>BEFORE and AFTER</strong> comparison of 1 website
           </h2>
 
-          <table class="table table-striped type--before-after">
+          <table className="table table-striped type--before-after">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Session name</th>
                 <th>"Before" shots</th>
                 <th>"After" shots</th>
-                <th class="text-center">Tests Passed</th>
-                <th class="text-center">Tests Failed</th>
+                <th className="text-center">Tests Passed</th>
+                <th className="text-center">Tests Failed</th>
                 <th width="1%"></th>
               </tr>
             </thead>
             {this.renderBATests()}
           </table>
-          <Link to="/create/before-after-comparsion" class="btn btn-link btn-sm add-new-cases">
+          <Link to="/create/before-after-comparsion" className="btn btn-link btn-sm add-new-cases">
             + Add new session
           </Link>
           {this.renderPagination(paginationBA, "before_after")}
@@ -134,8 +121,8 @@ export default class TestsPage extends Component {
       return (
         <tbody>
           <tr>
-            <td colSpan="7" class="text-center">
-              <div class="loading-spinner"></div>
+            <td colSpan="7" className="text-center">
+              <div className="loading-spinner"></div>
             </td>
           </tr>
         </tbody>
@@ -166,18 +153,18 @@ export default class TestsPage extends Component {
                   </Link>
                 </td>
                 <td>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].datetime : '-'}</td>
-                <td class="text-center"><span>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].passed_count : '-'}</span></td>
-                <td class={"text-center " + isFailed}><span>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].failed_count : '-'}</span></td>
+                <td className="text-center"><span>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].passed_count : '-'}</span></td>
+                <td className={"text-center " + isFailed}><span>{test.metadata_last_run.length > 0 ? metadata_lifetimes[test.metadata_last_run[0]].failed_count : '-'}</span></td>
                 <td>
                   {queue[test.id] ? getReadableRunName(queue[test.id].status) :
-                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, test.type, '')}>
+                    <button className="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, test.type, '')}>
                       {test.metadata_last_run.length > 0 ? 'Re-run the test' : 'Run the test'}
                     </button>
                   }
                 </td>
                 <td>
                   {deleting[test.id] ? "Deleting..." :
-                    <button class="btn btn-link btn-sm delete like-link" onClick={this.deleteTest.bind(this, test.id, 'a_b')}>Delete</button>
+                    <button className="btn btn-link btn-sm delete like-link" onClick={this.deleteTest.bind(this, test.id, 'a_b')}>Delete</button>
                   }
                 </td>
               </tr>
@@ -197,8 +184,8 @@ export default class TestsPage extends Component {
       return (
         <tbody>
         <tr>
-          <td colSpan="7" class="text-center">
-            <div class="loading-spinner"></div>
+          <td colSpan="7" className="text-center">
+            <div className="loading-spinner"></div>
           </td>
         </tr>
         </tbody>
@@ -235,7 +222,7 @@ export default class TestsPage extends Component {
               <td>
                 {!jQuery.isEmptyObject(lastReference) ? lastReference.datetime : '-'}
                 {queue[test.id] ? (queue[test.id].stage === "before" ? getReadableRunName(queue[test.id].status) : "After is in queue") :
-                  <button class={!jQuery.isEmptyObject(lastReference)? "btn btn-primary btn-sm like-link" : "btn btn-primary btn-sm"} onClick={this.runTest.bind(this, test.id, test.type, 'before')}>
+                  <button className={!jQuery.isEmptyObject(lastReference)? "btn btn-primary btn-sm like-link" : "btn btn-primary btn-sm"} onClick={this.runTest.bind(this, test.id, test.type, 'before')}>
                     {!jQuery.isEmptyObject(lastReference) ? 'Recreate shots' : 'Create shots'}
                   </button>
                 }
@@ -244,7 +231,7 @@ export default class TestsPage extends Component {
                 <td>
                   {!jQuery.isEmptyObject(lastTest) ? lastTest.datetime : '-'}
                   {queue[test.id] ? (queue[test.id].stage === "after" ? getReadableRunName(queue[test.id].status) : "Reference is in queue") :
-                    <button class="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, test.type, 'after')}>
+                    <button className="btn btn-primary btn-sm" onClick={this.runTest.bind(this, test.id, test.type, 'after')}>
                       {!jQuery.isEmptyObject(lastTest) ? 'Re-run the test' : 'Run the test'}
                     </button>
                   }
@@ -252,11 +239,11 @@ export default class TestsPage extends Component {
               ) : (
                 <td>-</td>
               )}
-              <td class="text-center"><span>{!jQuery.isEmptyObject(lastTest) ? lastTest.passed_count : '-'}</span></td>
-              <td class={"text-center" + isFailed}><span>{!jQuery.isEmptyObject(lastTest) ? lastTest.failed_count : '-'}</span></td>
+              <td className="text-center"><span>{!jQuery.isEmptyObject(lastTest) ? lastTest.passed_count : '-'}</span></td>
+              <td className={"text-center" + isFailed}><span>{!jQuery.isEmptyObject(lastTest) ? lastTest.failed_count : '-'}</span></td>
               <td>
                 {deleting[test.id] ? "Deleting..." :
-                  <button class="btn btn-link btn-sm delete like-link" onClick={this.deleteTest.bind(this, test.id, 'before_after')}>Delete</button>
+                  <button className="btn btn-link btn-sm delete like-link" onClick={this.deleteTest.bind(this, test.id, 'before_after')}>Delete</button>
                 }
               </td>
             </tr>
@@ -271,51 +258,51 @@ export default class TestsPage extends Component {
 
   renderPagination(pagination, type) {
     if (pagination.total_pages) {
-      const dotDotDot = <li class="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events:none;"><span aria-label="More">…</span></a></li>;
+      const dotDotDot = <li className="disabled"><a role="button" href="#" tabindex="-1" style="pointer-events:none;"><span aria-label="More">…</span></a></li>;
 
       let pageNumbers = [];
       for (let i = 1; i <= pagination.total_pages; i++) {
-        pageNumbers.push(<li class={pagination.page == i ? 'page-item active' : 'page-item'} key={i} onClick={this.pagerGotoPageByNumber.bind(this, i, pagination.limit, type)}><a class="page-link" href="#">{i}</a></li>);
+        pageNumbers.push(<li className={pagination.page == i ? 'page-item active' : 'page-item'} key={i} onClick={this.pagerGotoPageByNumber.bind(this, i, pagination.limit, type)}><a className="page-link" href="#">{i}</a></li>);
       }
 
       let previous, first, next, last;
 
       if (pagination.links.first) {
-        first = (<li class="page-item">
-          <a class="page-link" href="#" aria-label="First" onClick={this.pagerGotoPage.bind(this, pagination.links.first)}>
+        first = (<li className="page-item">
+          <a className="page-link" href="#" aria-label="First" onClick={this.pagerGotoPage.bind(this, pagination.links.first)}>
             <span aria-hidden="true">&laquo;</span>
-            <span class="sr-only">First</span>
+            <span className="sr-only">First</span>
           </a>
         </li>);
       }
       if (pagination.links.previous) {
-        previous = (<li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous" onClick={this.pagerGotoPage.bind(this, pagination.links.previous)}>
+        previous = (<li className="page-item">
+          <a className="page-link" href="#" aria-label="Previous" onClick={this.pagerGotoPage.bind(this, pagination.links.previous)}>
             <span aria-hidden="true">‹</span>
-            <span class="sr-only">Previous</span>
+            <span className="sr-only">Previous</span>
           </a>
         </li>);
       }
       if (pagination.links.next) {
-        next = (<li class="page-item">
-          <a class="page-link" href="#" aria-label="Next" onClick={this.pagerGotoPage.bind(this, pagination.links.next)}>
+        next = (<li className="page-item">
+          <a className="page-link" href="#" aria-label="Next" onClick={this.pagerGotoPage.bind(this, pagination.links.next)}>
             <span aria-hidden="true">›</span>
-            <span class="sr-only">Next</span>
+            <span className="sr-only">Next</span>
           </a>
         </li>);
       }
       if (pagination.links.last) {
-        last = (<li class="page-item">
-          <a class="page-link" href="#" aria-label="Last" onClick={this.pagerGotoPage.bind(this, pagination.links.last)}>
+        last = (<li className="page-item">
+          <a className="page-link" href="#" aria-label="Last" onClick={this.pagerGotoPage.bind(this, pagination.links.last)}>
             <span aria-hidden="true">&raquo;</span>
-            <span class="sr-only">Last</span>
+            <span className="sr-only">Last</span>
           </a>
         </li>);
       }
 
       return (
-        <nav aria-label="Page navigation for tests" class={type.replace('_', '-')}>
-          <ul class="pagination justify-content-center">
+        <nav aria-label="Page navigation for tests" className={type.replace('_', '-')}>
+          <ul className="pagination justify-content-center">
             {first}
             {previous}
             {pageNumbers}
@@ -337,3 +324,21 @@ export default class TestsPage extends Component {
     this.props.dispatch(fetchTestsByPageAndLimit(number, limit, type));
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    isLoading: state.tests.fetching,
+    deleting: state.tests.deleting,
+    tests: state.entities.tests,
+    queue: state.entities.queue,
+    metadata_lifetimes: state.entities.metadata_lifetimes,
+    listAB: state.tests.pagesAB[state.tests.paginationAB.page],
+    paginationAB: state.tests.paginationAB,
+    listBA: state.tests.pagesBA[state.tests.paginationBA.page],
+    paginationBA: state.tests.paginationBA,
+  };
+}
+
+const TestsPageContainer = connect(mapStateToProps)(TestsPage);
+
+export default TestsPageContainer;

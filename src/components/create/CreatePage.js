@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Link } from "react-router";
-import { fetchTest } from '../../actions/testActions';
+import { Link } from 'react-router-dom'
 import { SketchPicker } from 'react-color';
 import { diffEngines } from '../../utils/helper';
 import {
@@ -16,13 +15,8 @@ import {
 } from "../../actions/editorActions";
 import Messages from "../part/message";
 
-@connect((store) => {
-  return {
-    settings: store.editor,
-    uid: store.user.user.id,
-  };
-})
-export default class TwoWebsiteComparsionCreatePage extends Component {
+
+class TwoWebsiteComparsionCreatePage extends Component {
   constructor(props) {
     super(props);
 
@@ -149,47 +143,47 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
 
     for (let i = 0; i < pagesItems.length; i++) {
       pagesUrls.push(<div key={pagesItems[i].id}>
-        <div class="compare-url-title">{i + 1}. <input type="text" placeholder="Scenario name" value={pagesItems[i].name} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_NAME")}/> <a class="delete button" onClick={this.deletePageUrlPair.bind(this, i)}>Delete</a></div>
-        <div class={this.state.type === "a_b" ? "urls row a-b" : "urls row before-after"}>
+        <div className="compare-url-title">{i + 1}. <input type="text" placeholder="Scenario name" value={pagesItems[i].name} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_NAME")}/> <a className="delete button" onClick={this.deletePageUrlPair.bind(this, i)}>Delete</a></div>
+        <div className={this.state.type === "a_b" ? "urls row a-b" : "urls row before-after"}>
           {this.state.type === "a_b" ? (
-          <div class="url1">
-            <div class="url1-title">URL1</div>
-            <div class="url1-input"><input type="text" placeholder="Reference URL" value={pagesItems[i].source} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_SOURCE")}/></div>
+          <div className="url1">
+            <div className="url1-title">URL1</div>
+            <div className="url1-input"><input type="text" placeholder="Reference URL" value={pagesItems[i].source} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_SOURCE")}/></div>
           </div>) : ""}
-          {this.state.type === "a_b" ? <div class="url-vs-text col-lg-auto"> VS </div> :""}
-            <div class="url2">
-            <div class="url2-title">{this.state.type === "a_b" ? "URL2" : "URL"}</div>
-            <div class="url2-input"><input type="text" placeholder="Test URL" value={pagesItems[i].destination} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_DESTINATION")}/></div>
+          {this.state.type === "a_b" ? <div className="url-vs-text col-lg-auto"> VS </div> :""}
+            <div className="url2">
+            <div className="url2-title">{this.state.type === "a_b" ? "URL2" : "URL"}</div>
+            <div className="url2-input"><input type="text" placeholder="Test URL" value={pagesItems[i].destination} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_DESTINATION")}/></div>
           </div>
         </div>
       </div>);
     }
 
     return (
-      <div class="create-page">
-        <h2 class={this.state.type === "a_b" ? "compare a-b" : "compare before-after"}>Add {this.state.type === "a_b" ? "a 2 website" : "Before/After"} comparison name</h2>
-        <div id="compare-site-title" class="compare-site-title">
+      <div className="create-page">
+        <h2 className={this.state.type === "a_b" ? "compare a-b" : "compare before-after"}>Add {this.state.type === "a_b" ? "a 2 website" : "Before/After"} comparison name</h2>
+        <div id="compare-site-title" className="compare-site-title">
           <input type="text" placeholder="Test case title" value={this.props.settings.title} onChange={this.changeTitle.bind(this)} />
         </div>
-        <div id="compare-site-viewports" class="compare-site-viewports">
+        <div id="compare-site-viewports" className="compare-site-viewports">
           {this.renderViewports()}
         </div>
-        <div id="compare-site-data" class="compare-site-data">
-          <div id="compare-site-data-container" class="compare-site-data-container">
+        <div id="compare-site-data" className="compare-site-data">
+          <div id="compare-site-data-container" className="compare-site-data-container">
             {pagesUrls}
-            <div><a onClick={this.addNewPageUrlPair.bind(this)} class="btn btn-link btn-sm add-new-page-pair">+ Add new page pair</a></div>
+            <div><a onClick={this.addNewPageUrlPair.bind(this)} className="btn btn-link btn-sm add-new-page-pair">+ Add new page pair</a></div>
           </div>
         </div>
-        <div id="compare-site-other-data" class="compare-site-other-data">
-          <div class="expandable-list">
-            <div class="input-title">Selectors to hide:</div>
+        <div id="compare-site-other-data" className="compare-site-other-data">
+          <div className="expandable-list">
+            <div className="input-title">Selectors to hide:</div>
             {selectorsToHide.map((toHide, i) => {
               return (<div key={"toHide" + i}>{i + 1}. <input ref={"selectorsToHide-" + i} type="text" value={toHide} onChange={this.changeHideValue.bind(this, i)}/></div>);
             })}
             <div>{selectorsToHide.length + 1}. <input key={"toHide" + selectorsToHide.length} type="text" value="" onChange={this.changeHideValue.bind(this, selectorsToHide.length)}/></div>
           </div>
-          <div class="expandable-list">
-            <div class="input-title">Selectors to remove</div>
+          <div className="expandable-list">
+            <div className="input-title">Selectors to remove</div>
             {selectorsToRemove.map((toRemove, i) => {
               return (<div key={"toRemove" + i}>{i + 1}. <input ref={"selectorsToRemove-" + i} type="text" value={toRemove} onChange={this.changeRemoveValue.bind(this, i)}/></div>);
             })}
@@ -197,7 +191,7 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
           </div>
           <div>
             Tester engine:&nbsp;
-            <select value={testerEngine}>
+            <select defaultValue={testerEngine}>
               {diffEngines.map((engine) => {
                 return <option key={engine.code} value={engine.code}>{engine.name}</option>
               })}
@@ -205,26 +199,26 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
           </div>
           <div>
             Diff color:&nbsp;
-            <div class="color-picker-swatch" onClick={ this.handleClick }>
-              <div class="color-picker-color" style={ {background: color} } />
+            <div className="color-picker-swatch" onClick={ this.handleClick }>
+              <div className="color-picker-color" style={ {background: color} } />
             </div>
-            { this.state.displayColorPicker ? <div class="color-picker-popover">
-                <div class="color-picker-cover" onClick={ this.handleClose }/>
+            { this.state.displayColorPicker ? <div className="color-picker-popover">
+                <div className="color-picker-cover" onClick={ this.handleClose }/>
                 <SketchPicker disableAlpha color={color} onChange={ this.handleChange } />
               </div> : null }
           </div>
-          <div class="expandable-list">
-            <div class="input-title">Tags:</div>
+          <div className="expandable-list">
+            <div className="input-title">Tags:</div>
             {tags.map((tags, i) => {
               return (<div key={"tags" + i}>{i + 1}. <input ref={"tags-" + i} type="text" value={tags} onChange={this.changeTagsValue.bind(this, i)}/></div>);
             })}
             <div>{tags.length + 1}. <input key={"tags" + tags.length} type="text" value="" onChange={this.changeTagsValue.bind(this, tags.length)}/></div>
           </div>
         </div>
-        <div class="action-btn">
-          <a onClick={this.runTest.bind(this)} class="btn btn-link btn-sm save-and-run">Save & Run the test</a>
-          <a onClick={this.save.bind(this)} class="btn btn-link btn-sm save">Save</a>
-          <Link to="/" class="btn btn-link btn-sm cancel">Cancel</Link>
+        <div className="action-btn">
+          <a onClick={this.runTest.bind(this)} className="btn btn-link btn-sm save-and-run">Save & Run the test</a>
+          <a onClick={this.save.bind(this)} className="btn btn-link btn-sm save">Save</a>
+          <Link to="/" className="btn btn-link btn-sm cancel">Cancel</Link>
         </div>
         <Messages notGlobal errorMessage={error} /*successMessage={sMessage} infoMessage={message}*/ />
       </div>
@@ -237,25 +231,36 @@ export default class TwoWebsiteComparsionCreatePage extends Component {
       let viewportsItems = [];
       for (let i = 0; i < viewports.viewportsItems.length; i++) {
         viewportsItems.push(<div key={viewports.viewportsItems[i].id}>
-          {i + 1}. <input type="text" class="viewport-width" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={viewports.viewportsItems[i].width} />*
-          <input type="text" class="viewport-height" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={viewports.viewportsItems[i].height} />
-          &nbsp;(<input type="text" class="viewport-name" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={viewports.viewportsItems[i].name} />) <a onClick={this.deleteViewport.bind(this, i)} class="btn btn-link btn-sm">Delete</a>
+          {i + 1}. <input type="text" className="viewport-width" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={viewports.viewportsItems[i].width} />*
+          <input type="text" className="viewport-height" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={viewports.viewportsItems[i].height} />
+          &nbsp;(<input type="text" className="viewport-name" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={viewports.viewportsItems[i].name} />) <a onClick={this.deleteViewport.bind(this, i)} className="btn btn-link btn-sm">Delete</a>
         </div>);
       }
 
       return (
-        <div class="viewports-container">
+        <div className="viewports-container">
           <div>Viewports</div>
           {viewportsItems}
-          <div class="buttons"><a onClick={this.editAddNewViewports.bind(this)} class="btn btn-link btn-sm">+ Add new viewport</a></div>
+          <div className="buttons"><a onClick={this.editAddNewViewports.bind(this)} className="btn btn-link btn-sm">+ Add new viewport</a></div>
         </div>
       );
     }
 
 
     return (
-      <div class="viewports-container">
+      <div className="viewports-container">
         <div>Viewports (<button onClick={this.editViewports.bind(this)}>Edit</button>)</div>
       </div>);
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    settings: state.editor,
+    uid: state.user.user.id,
+  };
+}
+
+const TwoWebsiteComparsionCreatePageContainer = connect(mapStateToProps)(TwoWebsiteComparsionCreatePage);
+
+export default TwoWebsiteComparsionCreatePageContainer;
