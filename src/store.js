@@ -51,7 +51,12 @@ function createStorageListener(store, evt) {
 }
 
 /* Define store */
-const middleware = applyMiddleware(promise(), thunk, storageMiddleware(), logger());
+const middleware = applyMiddleware(
+  promise(),
+  thunk,
+  logger(),
+  storageMiddleware());
+
 const store = createStore(reducer, middleware);
 
 /* Create event listener for storege stage */

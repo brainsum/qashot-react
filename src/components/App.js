@@ -98,11 +98,11 @@ class App extends Component {
     return (
       <div className="container__inner page__content bg-white">
         <Messages/>
-        <Route exactly pattern="/" component={TestsPage} />
-        <Route exactly pattern="/create/two-website-comparsion" component={CreateTwoWebsiteComparsionPage} />
-        <Route exactly pattern="/create/before-after-comparsion" component={CreateTwoWebsiteComparsionPage} />
-        <Route exactly pattern="/two-website-comparsion/:id" component={TwoWebsiteComparsionPage} />
-        {/* <Route exactly pattern="/before-after-comparsion/:id" component={BeforeAfterComparsionItemPage} /> */}
+        <Route exact  path="/" component={TestsPage} />
+        <Route exact  path="/create/two-website-comparsion" component={CreateTwoWebsiteComparsionPage} />
+        <Route exact  path="/create/before-after-comparsion" component={CreateTwoWebsiteComparsionPage} />
+        <Route exact  path="/two-website-comparsion/:id" component={TwoWebsiteComparsionPage} />
+        <Route exact  path="/before-after-comparsion/:id" component={BeforeAfterComparsionItemPage} />
       </div>
     );
   }

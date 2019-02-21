@@ -1,5 +1,5 @@
 import axios from '../utils/axios';
-import {generateTestUrl} from "../utils/helper";
+import { generateTestUrl } from "../utils/helper";
 import store from "../store";
 
 export function fetchTest(id) {

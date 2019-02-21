@@ -81,6 +81,7 @@ export default function reducer(state={
         queue: typeof norm.entities.queue !== "undefined" ? norm.entities.queue : [],
       };
     }
+    default:
   }
 
   return state;

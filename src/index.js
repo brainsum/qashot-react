@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from "react-redux"
 // Use this, if you have support for sass translator. In windows it will work

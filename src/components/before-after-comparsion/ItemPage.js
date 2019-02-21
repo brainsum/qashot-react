@@ -44,7 +44,7 @@ class BeforeAfterComparsionItemPage extends Component {
   }
 
   componentDidMount() {
-    const { id } = this.props.params;
+    const { id } = this.props.match.params;
 
     this.props.dispatch(fetchTest(id));
     setTimeout(function () {
@@ -408,7 +408,7 @@ class BeforeAfterComparsionItemPage extends Component {
           <div className="test-links">
             <a onClick={this.addNewScenario.bind(this)}>+ Add new test</a>
             <div className="display-radios">
-              {display.map(([id, value, text], i) => <label for={id} key={i} className={id}><input type="radio" name="display" value={value} id={id} onChange={this.displayMode.bind(this)} checked={this.state.displayMode === value} />{text}</label>)}
+              {display.map(([id, value, text], i) => <label htmlFor={id} key={i} className={id}><input type="radio" name="display" value={value} id={id} onChange={this.displayMode.bind(this)} checked={this.state.displayMode === value} />{text}</label>)}
             </div>
           </div>
         </div>
@@ -788,12 +788,11 @@ class BeforeAfterComparsionItemPage extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
   return {
     isLoading: state.test.fetching,
     loaded: state.test.fetched,
-    // data: state.entities.tests[props.params.id],
-    data: state.entities.tests,
+    data: state.entities.tests[props.match.params.id],
     metadata_lifetimes: state.entities.metadata_lifetimes,
     results: state.entities.results,
     scenarios: state.entities.scenarios,

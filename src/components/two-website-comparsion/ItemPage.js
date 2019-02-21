@@ -41,8 +41,10 @@ class TwoWebsiteComparsionItemPage extends Component {
     };
   }
 
+
+
   componentDidMount() {
-    const { id } = this.props.params;
+    const { id } = this.props.match.params;
 
     this.props.dispatch(fetchTest(id));
     setTimeout(function () {
@@ -778,12 +780,11 @@ class TwoWebsiteComparsionItemPage extends Component {
   }
 }
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store, props) => {
   return {
     isLoading: store.test.fetching,
     loaded: store.test.fetched,
-    //data: store.entities.tests[props.params.id],
-    data: store.entities.tests,
+    data: store.entities.tests[props.match.params.id],
     metadata_lifetimes: store.entities.metadata_lifetimes,
     results: store.entities.results,
     scenarios: store.entities.scenarios,

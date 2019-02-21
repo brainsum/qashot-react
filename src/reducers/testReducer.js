@@ -1,6 +1,3 @@
-import { normalize } from 'normalizr';
-import { testSchema } from '../schema/mainApiSchemas';
-
 export default function reducer(state={
   test: {},
   fetching: false,
@@ -95,6 +92,7 @@ export default function reducer(state={
       }
       return newState;
     }
+    default:
   }
 
   return state;
