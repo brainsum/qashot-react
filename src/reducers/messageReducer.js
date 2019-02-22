@@ -130,6 +130,7 @@ export default function reducer(state={
             infoMessage: [],
           }
         }
+        default:
       }
       break;
     }
@@ -152,6 +153,7 @@ export default function reducer(state={
           propName = "infoMessage";
           break;
         }
+        default:
       }
 
       let index = null;
@@ -170,6 +172,7 @@ export default function reducer(state={
         ],
       };
     }
+    default:
   }
 
   if (action.type.endsWith("_REJECTED")) {

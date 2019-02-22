@@ -89,6 +89,7 @@ export default function reducer(state={
           newState.test.data.field_scenario[action.payload.index].name = action.payload.value;
           break;
         }
+        default:
       }
       return newState;
     }

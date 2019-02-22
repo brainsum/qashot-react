@@ -48,6 +48,7 @@ export default function reducer(state={
         password: action.payload.password,
       }
     }
+    default:
   }
 
   return state;

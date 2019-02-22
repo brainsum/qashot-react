@@ -1,6 +1,5 @@
 import { normalize } from 'normalizr';
 import { testListerSchema } from '../schema/mainApiSchemas';
-import merge from 'lodash/merge';
 
 export default function reducer(state={
   pagesAB: {},
@@ -113,6 +112,7 @@ export default function reducer(state={
       return {...state, fetching: false, error: action.payload};
     }
     case "FETCH_BA_TESTS_FULFILLED": {
+      console.log('FETCH_BA_TESTS_FULFILLED')
       let norm = normalize(action.payload.data, testListerSchema);
 
       let pageItems = [...norm.result.entity];
@@ -263,6 +263,7 @@ export default function reducer(state={
 
       return state;
     }
+    default:
   }
 
   return state;

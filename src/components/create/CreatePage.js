@@ -22,10 +22,10 @@ class TwoWebsiteComparsionCreatePage extends Component {
 
     let type = "";
 
-    if (props.pathname === "/create/two-website-comparsion") {
+    if (props.match.path === "/create/two-website-comparsion") {
       type = "a_b";
     }
-    else if (props.pathname === "/create/before-after-comparsion") {
+    else if (props.match.path === "/create/before-after-comparsion") {
       type = "before_after";
     }
 
@@ -72,11 +72,11 @@ class TwoWebsiteComparsionCreatePage extends Component {
   }
 
   save() {
-    this.props.dispatch(saveTest(this.props.settings, this.props.uid, this.state.type));
+    this.props.dispatch(saveTest(this.props.settings, 1, this.state.type));
   }
 
   runTest() {
-    this.props.dispatch(saveAndRunTest(this.props.settings, this.props.uid, this.state.type));
+    this.props.dispatch(saveAndRunTest(this.props.settings, 1, this.state.type));
   }
 
   handleClick = () => {
