@@ -10,6 +10,8 @@ import {getEntityUpdate, getQueueUpdate} from "../../actions/testsActions";
 import {getReadableRunName} from "../../utils/helper";
 import {SketchPicker} from "react-color";
 
+import imgGears from './../../assets/img/gears.png';
+
 
 class BeforeAfterComparsionItemPage extends Component {
   results = null;
@@ -513,7 +515,7 @@ class BeforeAfterComparsionItemPage extends Component {
       <div>
         <h1 className="comparation ba">
           {data.name}
-          <img className="test-settings" src="/img/gears.png" width="25" height="25" alt="Edit settings" title="Edit settings" onClick={this.editSettings.bind(this)}/>
+          <img className="test-settings" src={ imgGears } width="25" height="25" alt="Edit settings" title="Edit settings" onClick={this.editSettings.bind(this)}/>
         </h1>
         <div id="compare-site-other-data">
           Selectors to hide: {data.selectors_to_hide.join("; ") || "-"}<br/>
