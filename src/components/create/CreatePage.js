@@ -143,7 +143,7 @@ class TwoWebsiteComparsionCreatePage extends Component {
 
     for (let i = 0; i < pagesItems.length; i++) {
       pagesUrls.push(<div key={pagesItems[i].id}>
-        <div className="compare-url-title">{i + 1}. <input type="text" placeholder="Scenario name" value={pagesItems[i].name} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_NAME")}/> <button className="delete button" onClick={this.deletePageUrlPair.bind(this, i)}>Delete</button></div>
+        <div className="compare-url-title">{i + 1}. <input type="text" placeholder="Scenario name" value={pagesItems[i].name} onChange={this.changeValueOfPageUrlPair.bind(this, i, "FIELD_NAME")}/> <button className="btn btn-md" onClick={this.deletePageUrlPair.bind(this, i)}>Delete</button></div>
         <div className={this.state.type === "a_b" ? "urls row a-b" : "urls row before-after"}>
           {this.state.type === "a_b" ? (
           <div className="url1">
@@ -171,7 +171,7 @@ class TwoWebsiteComparsionCreatePage extends Component {
         <div id="compare-site-data" className="compare-site-data">
           <div id="compare-site-data-container" className="compare-site-data-container">
             {pagesUrls}
-            <div><button onClick={this.addNewPageUrlPair.bind(this)} className="btn btn-link btn-sm add-new-page-pair">+ Add new page pair</button></div>
+            <div><button onClick={this.addNewPageUrlPair.bind(this)} className="btn btn-link btn-md add-new-page-pair">+ Add new page pair</button></div>
           </div>
         </div>
         <div id="compare-site-other-data" className="compare-site-other-data">
@@ -216,9 +216,9 @@ class TwoWebsiteComparsionCreatePage extends Component {
           </div>
         </div>
         <div className="action-btn">
-          <button onClick={this.runTest.bind(this)} className="btn btn-link btn-sm save-and-run">Save & Run the test</button>
-          <button onClick={this.save.bind(this)} className="btn btn-link btn-sm save">Save</button>
-          <Link to="/" className="btn btn-link btn-sm cancel">Cancel</Link>
+          <button onClick={this.runTest.bind(this)} className="btn btn-link btn-md save-and-run">Save & Run the test</button>
+          <button onClick={this.save.bind(this)} className="btn btn-link btn-md save">Save</button>
+          <Link to="/"><button className="btn btn-link btn-md cancel">Cancel</button></Link>
         </div>
         <Messages notGlobal errorMessage={error} /*successMessage={sMessage} infoMessage={message}*/ />
       </div>
@@ -233,7 +233,7 @@ class TwoWebsiteComparsionCreatePage extends Component {
         viewportsItems.push(<div key={viewports.viewportsItems[i].id}>
           {i + 1}. <input type="text" className="viewport-width" placeholder="Width" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_WIDTH")} value={viewports.viewportsItems[i].width} />*
           <input type="text" className="viewport-height" placeholder="Height" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_HEIGHT")} value={viewports.viewportsItems[i].height} />
-          &nbsp;(<input type="text" className="viewport-name" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={viewports.viewportsItems[i].name} />) <button onClick={this.deleteViewport.bind(this, i)} className="btn btn-link btn-sm">Delete</button>
+          &nbsp;(<input type="text" className="viewport-name" placeholder="Viewport name" onChange={this.changeValueOfViewport.bind(this, i, "FIELD_NAME")} value={viewports.viewportsItems[i].name} />) <button onClick={this.deleteViewport.bind(this, i)} className="btn btn-link btn-md">Delete</button>
         </div>);
       }
 
@@ -241,7 +241,7 @@ class TwoWebsiteComparsionCreatePage extends Component {
         <div className="viewports-container">
           <div>Viewports</div>
           {viewportsItems}
-          <div className="buttons"><button onClick={this.editAddNewViewports.bind(this)} className="btn btn-link btn-sm">+ Add new viewport</button></div>
+          <div className="buttons"><button onClick={this.editAddNewViewports.bind(this)} className="btn btn-link btn-md">+ Add new viewport</button></div>
         </div>
       );
     }
