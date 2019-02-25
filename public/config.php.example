@@ -3,8 +3,10 @@
 $config = [
   'api' => [
     'hosts' => [
-      'prod' => [
-        'url' => 'http://ec2-52-51-88-127.eu-west-1.compute.amazonaws.com'
+      'base' => [
+        'prod' => [
+          'url' => 'http://ec2-52-51-88-127.eu-west-1.compute.amazonaws.com'
+        ]
       ]
     ]
   ]

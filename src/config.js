@@ -8,7 +8,6 @@ config.values = {
       base: {
         prod: {
           url: 'http://ec2-52-51-88-127.eu-west-1.compute.amazonaws.com',
-          test: 'testValue'
         }
       }
     }
@@ -21,8 +20,7 @@ config.values = {
  * 
 */
 config.set = function() {
-
-  let globalValues = (typeof window.QARConfig === 'undefined') ? {} : JSON.parse(window.QARConfig);
+  let globalValues = (typeof window.QAConfig === 'undefined') ? {} : window.QAConfig;
   let localValues = this.values;
 
   window.QAConfig = merge(localValues, globalValues);
