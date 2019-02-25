@@ -2,7 +2,7 @@ version: "2"
 
 services:
   app:
-    image: brainsum/qashot-react:0.1.0
+    image: brainsum/qashot-react:1.0.0
     build:
       context: .
     ports:
