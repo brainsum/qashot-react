@@ -1,9 +1,30 @@
-version: "2"
+version: "2.4"
 
 services:
-  app:
-    image: brainsum/qashot-react:1.0.4
-    build:
-      context: .
+#  app:
+#    image: brainsum/qashot-react:1.0.3
+#    build:
+#      context: .
+#    ports:
+#     - "8080:80"
+
+  web:
+    # Todo: Build.
+    # image: brainsum/qashot-react-web:1.0.0
+    image: pagespeed/nginx-pagespeed:1.13.35-alpine3.8-ngx1.15
+    depends_on:
+      - app
     ports:
-     - "8080:80"
+     - "${WEB_PORT:-8080}:80"
+    volumes:
+      - "./docker/web/nginx_config/nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "./docker/web/nginx_config/additional/:/etc/nginx/additional/"
+      - "./build/:/var/www/html/"
+
+  # @todo: Use the built-in php.ini-production
+  app:
+    # Todo: Build.
+    # image: brainsum/qashot-react:2.0.0
+    image: php:7.2.15-fpm-alpine3.9
+    volumes:
+      - "./build/:/var/www/html/"
