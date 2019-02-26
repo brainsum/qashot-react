@@ -1,6 +1,9 @@
 .git/
 build/
 node_modules/
+# Config is runtime only.
+config/
+docs/
 
 README.md
 .dockerignore
