@@ -1,9 +1,15 @@
+.idea/
 .git/
 build/
 node_modules/
+# Config is runtime only.
+config/
+docs/
 
 README.md
 .dockerignore
 .gitignore
 Dockerfile
 docker-compose.yml
+docker-compose.*.yml
+*.sh

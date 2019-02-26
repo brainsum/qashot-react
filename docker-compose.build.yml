@@ -1,0 +1,25 @@
+version: "2.4"
+
+x-build-args:
+  &build-args
+  args:
+    - SOURCE_CODE_IMAGE=brainsum/qashot-react-build
+    - SOURCE_CODE_IMAGE_TAG=1.0.0
+
+services:
+  # This only serves for building the images.
+  build:
+    image: brainsum/qashot-react-build:1.0.0
+    build:
+      context: .
+      dockerfile: ./docker/builder/Dockerfile
+
+  web:
+    build:
+      context: ./docker/web
+      <<: *build-args
+
+  app:
+    build:
+      context: ./docker/app
+      <<: *build-args

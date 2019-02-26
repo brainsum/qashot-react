@@ -1,9 +1,20 @@
-version: "2"
+version: "2.4"
+
+x-config:
+  &config-file-mount
+  "./config/config.php:/var/www/html/config.php:ro"
 
 services:
-  app:
-    image: brainsum/qashot-react:0.1.0
-    build:
-      context: .
+  web:
+    image: brainsum/qashot-react-web:1.0.0
+    depends_on:
+      - app
     ports:
-     - "8080:80"
+     - "${WEB_PORT:-8080}:80"
+    volumes:
+      - *config-file-mount
+
+  app:
+    image: brainsum/qashot-react-app:1.0.0
+    volumes:
+    - *config-file-mount
