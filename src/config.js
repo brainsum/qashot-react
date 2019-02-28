@@ -7,7 +7,7 @@ config.values = {
     hosts: {
       base: {
         prod: {
-          url: 'http://ec2-52-51-88-127.eu-west-1.compute.amazonaws.com',
+          url: 'https://product-backend.qashot.com',
         }
       }
     }
