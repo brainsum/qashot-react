@@ -31,6 +31,7 @@ class BeforeAfterComparsionItemPage extends Component {
         testerEngine: "",
         color: "",
         tags: [],
+        reportPageLink: ''
       },
       lastUpdatedArrayElement: "",
       newScenario: false,
@@ -54,6 +55,10 @@ class BeforeAfterComparsionItemPage extends Component {
     }.bind(this), 100);
 
     this.timer = setInterval(this.periodicTask.bind(this), 10000);
+
+    this.setState(function(prevState) {
+      return { settingsData: Object.assign(prevState.settingsData, { reportPageLink: this.createReportPageLink() }) }
+    });
   }
 
   componentWillUnmount() {
@@ -347,6 +352,22 @@ class BeforeAfterComparsionItemPage extends Component {
     });
   };
 
+  createReportPageLink() {
+    let backstopLink = ''
+
+    if (typeof this.props.data.field_remote_html_report_path !== 'undefined') {
+      if (this.props.data.field_remote_html_report_path.length) {
+        backstopLink = this.props.data.field_remote_html_report_path;
+      } else {
+        backstopLink = window.QAConfig.api.hosts.base.prod.url + '/' + this.props.data.field_html_report_path;
+      }
+    } else {
+      backstopLink = window.QAConfig.api.hosts.base.prod.url + '/' + this.props.data.field_html_report_path;
+    }
+
+    return backstopLink;
+  }
+
   changeArrayValue(i, propName, e) {
     if (e.target.value === "" || e.target.value === null) {
       this.setState({
@@ -517,6 +538,9 @@ class BeforeAfterComparsionItemPage extends Component {
           {data.name}
           <img className="test-settings" src={ imgGears } width="25" height="25" alt="Edit settings" title="Edit settings" onClick={this.editSettings.bind(this)}/>
         </h1>
+        <div className="backstop-link">
+          <a href={ this.state.settingsData.reportPageLink } target="_blank" rel="noreferrer noopener">Report page</a>
+        </div>
         <div id="compare-site-other-data">
           Selectors to hide: {data.selectors_to_hide.join("; ") || "-"}<br/>
           Selectors to remove: {data.selectors_to_remove.join("; ") || "-"}<br/>
@@ -705,10 +729,10 @@ class BeforeAfterComparsionItemPage extends Component {
     return (<div key={j} className="row">
       <div className="viewport-name col-lg-12">Viewport: {viewportItem.field_width} * {viewportItem.field_height} ({viewportItem.field_name})</div>
       <div className="source col-lg-4">
-        <img src={this.results[i][j].full_reference}/>
+        <a href={ this.state.settingsData.reportPageLink } target="_blank" rel="noreferrer noopener"><img src={this.results[i][j].full_reference}/></a>
       </div>
       <div className="test col-lg-4">
-        <img src={this.results[i][j].full_test}/>
+        <a href={ this.state.settingsData.reportPageLink } target="_blank" rel="noreferrer noopener"><img src={this.results[i][j].full_test}/></a>
       </div>
       {this.renderTestResult(this.results[i][j].success, this.results[i][j].full_diff)}
     </div>);
@@ -761,7 +785,9 @@ class BeforeAfterComparsionItemPage extends Component {
       return (<div className="compare col-lg-4"><span className="difference-fail">Houston, We've Got a Problem</span></div>);
     }
     else {
-      return (<div className="compare col-lg-4"><img src={url}/></div>);
+      return (<div className="compare col-lg-4">
+        <a href={ this.state.settingsData.reportPageLink } target="_blank" rel="noreferrer noopener"><img src={url}/></a>
+      </div>);
     }
   }
 
