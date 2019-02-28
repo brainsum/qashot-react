@@ -17,6 +17,7 @@ const queue = new schema.Entity('queue', schema, {idAttribute: 'tid'});
 
 // Define your entity short list schema.
 const entityShortList = new schema.Entity('tests', {
+  // @todo: wtf?
   metadata_last_run: [ metadata_lifetime ],
   metadata_lifetime: [ metadata_lifetime ]
 });
@@ -30,6 +31,7 @@ export const testListerSchema = new schema.Object({
 export const testSchema = new schema.Entity('tests', {
   field_scenario: [ scenario ],
   field_viewport: [ viewport ],
+  // @todo: wtf?
   metadata_last_run: [ metadata_lifetime ],
   result: [ result ]
 });

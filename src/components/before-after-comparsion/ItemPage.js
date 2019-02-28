@@ -533,6 +533,7 @@ class BeforeAfterComparsionItemPage extends Component {
 
     let isDataBefore = data.metadata_last_run.length > 0;
     let isDataAfter = data.metadata_last_run.length > 1;
+    // @todo: @fixme: lastRunAfter and lastRunBefore seem to be mixed up.
     let lastRunBefore = data.metadata_last_run[0];
     let lastRunAfter = data.metadata_last_run[1];
 
