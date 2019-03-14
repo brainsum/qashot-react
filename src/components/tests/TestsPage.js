@@ -62,30 +62,6 @@ class TestsPage extends Component {
 
     return (
       <div className="tests-page">
-        <div className="two-website-compare">
-          <h2>
-            <strong>2 website</strong> comparsions (eg. Development VS Live)
-          </h2>
-
-          <table className="table table-striped type--a-b">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Session name</th>
-                <th>Last run</th>
-                <th className="text-center">Tests Passed</th>
-                <th className="text-center">Tests Failed</th>
-                <th width="1%"></th>
-                <th width="1%"></th>
-              </tr>
-            </thead>
-            {this.renderABTests()}
-          </table>
-          <Link to="/create/two-website-comparsion" className="btn btn-link btn-sm add-new-cases">
-            + Add new session
-          </Link>
-          {this.renderPagination(paginationAB, "a_b")}
-        </div>
         <div className="before-after-compare">
           <h2>
             <strong>BEFORE and AFTER</strong> comparison of 1 website
@@ -109,6 +85,30 @@ class TestsPage extends Component {
             + Add new session
           </Link>
           {this.renderPagination(paginationBA, "before_after")}
+        </div>
+        <div className="two-website-compare">
+          <h2>
+            <strong>2 website</strong> comparsions (eg. Development VS Live)
+          </h2>
+
+          <table className="table table-striped type--a-b">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Session name</th>
+                <th>Last run</th>
+                <th className="text-center">Tests Passed</th>
+                <th className="text-center">Tests Failed</th>
+                <th width="1%"></th>
+                <th width="1%"></th>
+              </tr>
+            </thead>
+            {this.renderABTests()}
+          </table>
+          <Link to="/create/two-website-comparsion" className="btn btn-link btn-sm add-new-cases">
+            + Add new session
+          </Link>
+          {this.renderPagination(paginationAB, "a_b")}
         </div>
       </div>
     );
