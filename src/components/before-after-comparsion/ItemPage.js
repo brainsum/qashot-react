@@ -569,8 +569,8 @@ class BeforeAfterComparsionItemPage extends Component {
       <div className="middle-data">
         <div className="data-reference">
           <h2>"Before" shots (reference)</h2>
-          <div className="compared-time">Created at: {isDataBefore ? <strong>{metadata_lifetimes[lastRunAfter].datetime}</strong> : "Not created yet"}</div>
-          <div className="test-runtime">(Test run time: {isDataBefore? metadata_lifetimes[lastRunAfter].duration : "Not runned yet"})</div>
+          <div className="compared-time">Created at: {isDataBefore ? <strong>{metadata_lifetimes[lastRunBefore].datetime}</strong> : "Not created yet"}</div>
+          <div className="test-runtime">(Test run time: {isDataBefore? metadata_lifetimes[lastRunBefore].duration : "Not runned yet"})</div>
           {queue[data.id] ? (queue[data.id].stage === "before" ? getReadableRunName(queue[data.id].status) : "After is in queue") :
             <button className="btn btn-primary btn-lg" onClick={this.runTest.bind(this, 'before')}>
               {isDataBefore ? 'Re-create' : 'Create'}
@@ -579,8 +579,8 @@ class BeforeAfterComparsionItemPage extends Component {
         </div>
         <div className="data-after">
           <h2>"After" shots</h2>
-          <div className="compared-time">Created at: {isDataAfter ? <strong>{metadata_lifetimes[lastRunBefore].datetime}</strong> : "Not created yet"}</div>
-          <div className="test-runtime">(Test run time: {isDataAfter ? metadata_lifetimes[lastRunBefore].duration : "Not runned yet"})</div>
+          <div className="compared-time">Created at: {isDataAfter ? <strong>{metadata_lifetimes[lastRunAfter].datetime}</strong> : "Not created yet"}</div>
+          <div className="test-runtime">(Test run time: {isDataAfter ? metadata_lifetimes[lastRunAfter].duration : "Not runned yet"})</div>
           {queue[data.id] ? (queue[data.id].stage === "after" ? getReadableRunName(queue[data.id].status) : "Reference is in queue") :
             <button className="btn btn-primary btn-lg" onClick={this.runTest.bind(this, 'after')}>
               {isDataAfter ? 'Re-run the test' : 'Run the test'}
