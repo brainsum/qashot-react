@@ -5,6 +5,6 @@ services:
     build:
       context: ./
 
-  web:
+  server:
     build:
-      context: ./docker/web
+      context: ./docker/server

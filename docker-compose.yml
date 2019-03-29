@@ -11,7 +11,7 @@ services:
       - *config-file-mount
       - "source_code:/var/www/html"
 
-  web:
+  server:
     image: brainsum/qashot-react-web:1.2.0
     depends_on:
       - app
