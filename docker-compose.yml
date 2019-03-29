@@ -6,7 +6,7 @@ x-config:
 
 services:
   app:
-    image: brainsum/qashot-react-app:1.2.0
+    image: brainsum/qashot-react-app:1.2.1
     volumes:
       - *config-file-mount
       - "source_code:/var/www/html"
